@@ -1,0 +1,25 @@
+import assert from 'node:assert/strict';
+import fs from 'node:fs/promises';
+const html=await fs.readFile('dist/health.html','utf8');
+assert.ok(html.indexOf('id="daily-enabled"')>html.indexOf('id="health-product"'));
+assert.ok(html.indexOf('id="daily-enabled"')<html.indexOf('id="care-enabled"'));
+const nodes=Object.fromEntries([...html.matchAll(/id="([^"]+)"/g)].map(m=>[m[1],{value:'',checked:false,disabled:false,hidden:false,innerHTML:'',textContent:'',events:{},attrs:{},classList:{toggle(){},remove(){},add(){}},addEventListener(t,fn){this.events[t]=fn;},replaceChildren(){this.innerHTML='';},remove(){},options:[],setAttribute(k,v){this.attrs[k]=v;}}]));
+nodes.age.value='35';nodes.amount.value='1000000';nodes.frequency.value='annual';nodes['main-plan'].value='smart9999-large';nodes['ci-sum'].value='1000000';nodes['pa-plan'].value='2';nodes['health-benefit'].value='5000000';nodes['health-type'].value='none';nodes['care-benefit'].value='5000000';nodes['care-condition'].value='both';
+const radio={value:'male',addEventListener(){}};
+globalThis.document={getElementById:id=>nodes[id],querySelector:()=>radio,querySelectorAll:()=>[radio],body:{classList:{toggle(){}}}};
+globalThis.fetch=async url=>({ok:true,json:async()=>JSON.parse(await fs.readFile(new URL('./dist/'+String(url).replace('./',''),import.meta.url)))});
+await import('./dist/health.mjs');
+assert.equal(nodes['daily-controls'].hidden,true);assert.equal(nodes['daily-cost'].hidden,true);assert.equal(nodes['daily-500'].disabled,true);
+nodes['daily-enabled'].checked=true;nodes['daily-enabled'].events.change();
+assert.equal(nodes['daily-controls'].hidden,false);assert.equal(nodes['daily-500'].attrs['aria-pressed'],'true');assert.equal(nodes['daily-1000'].attrs['aria-pressed'],'false');
+assert.equal(nodes['daily-premium'].textContent,'800.00 บาท/ปี');assert.ok(nodes['daily-benefits'].innerHTML.includes('750.00 บาท/วัน'));assert.ok(nodes['customer-summary-text'].value.includes('ค่าชดเชยรายวัน'));
+assert.equal(nodes['daily-premium-heading'].hidden,false);assert.ok(nodes['schedule-body'].innerHTML.includes('<td>800.00</td>'));
+nodes['daily-1000'].events.click();assert.equal(nodes['daily-1000'].attrs['aria-pressed'],'true');assert.ok(nodes['daily-premium'].textContent.includes('1,600.00'));assert.ok(nodes['daily-benefits'].innerHTML.includes('1,500.00'));
+nodes.age.value='46';nodes.frequency.value='monthly';nodes.frequency.events.change();assert.equal(nodes['daily-premium'].textContent,'189.00 บาท/เดือน');
+nodes['daily-500'].events.click();assert.ok(nodes['daily-premium'].textContent.includes('95.00'));assert.ok(nodes['daily-annual'].textContent.includes('1,140.00'));
+radio.value='female';nodes.frequency.events.change();assert.ok(nodes['daily-premium'].textContent.includes('95.00'));
+for(const age of ['15','65','']){nodes.age.value=age;nodes.age.events.input();assert.equal(nodes.error.hidden,false);assert.equal(nodes.pdf.disabled,true);assert.equal(nodes['schedule-body'].innerHTML,'');}
+nodes.age.value='35';nodes.age.events.input();assert.equal(nodes.error.hidden,true);
+nodes['daily-enabled'].checked=false;nodes['daily-enabled'].events.change();assert.equal(nodes['daily-controls'].hidden,true);assert.equal(nodes['daily-cost'].hidden,true);assert.equal(nodes['daily-premium-heading'].hidden,true);assert.ok(!nodes['customer-summary-text'].value.includes('ค่าชดเชยรายวัน'));assert.equal(nodes['daily-benefits'].innerHTML,'');
+nodes['daily-enabled'].checked=true;nodes['daily-enabled'].events.change();assert.equal(nodes['daily-500'].attrs['aria-pressed'],'true');assert.equal(nodes.pdf.disabled,false);
+console.log('PASS: HB placement after health, toggle, two selected buttons, PDF modal rates, benefits, sex/age changes, summary/columns, invalid input and removal/recovery');

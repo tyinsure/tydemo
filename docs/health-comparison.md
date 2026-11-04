@@ -1,0 +1,11 @@
+# Five-plan health comparison — 2026-10-25
+
+The comparison sits below the overview journey, before the annual schedule. It reads the form's gender, starting age, main policy, calculated sum and payment frequency. Invalid main inputs clear the comparison; unavailable rates or rider eligibility errors are shown per column without inventing prices.
+
+Columns: Elite Health Plus 20M Thailand; D Health Lite + Care Plus 5M; D Health Lite; Maochai Extra room 4,000/medical 500,000 + Care Plus 5M; the same Extra without Care Plus. The user explicitly requested D Health Lite to follow the form's Deduct/Copay; its selected 1M/5M benefit follows that selection as well, to avoid quoting a 20,000 deductible under a nonexistent 5M option. Convertible settings are retained for those D Health columns, without changing their initial-year premium.
+
+The user also confirmed using the same selected PA, OPD, daily compensation and CI across all columns. Care Plus is fixed to the shared 5M kidney/cancer plan in the + columns, excluded in the other columns. Other rider premiums are itemized separately from health and Care Plus. Premium mode preserves the main policy premium and calculated coverage.
+
+Benefits reference the existing product summaries. Values are nominal, before Deduct/Copay, and subject to shared caps and policy terms. Update 2026-10-28: cell descriptions were shortened to follow the supplied example. The user explicitly confirmed Extra ICU equals **2x the selected daily room rate**; the comparison calculates 8,000/day from plan 3, and all Extra benefits/PDF/Excel use the shared calculation (plan 1: 4,000/day). No unprovided 6-year premium guarantee or age-10 health rate is inferred. The comparison has no separate PDF/Excel export; existing selected-plan exports remain unchanged.
+
+Validation: 128 five-plan comparison scenarios across age, gender, payment mode, calculation mode and selected riders; all 11 available D Health deductible/copay choices; input immutability, source coverage limits, unavailable rates, rider eligibility and UI clearing/recovery. Full suite: 38/38. Browser verified the age-32 male / 500,000 sum / monthly / PA2 example exactly matches 4,142 / 2,984 / 2,745 / 2,694 / 2,455 baht. Choosing Copay20 changes only the D Health columns; adding OPD + CI adds the same 515 baht to every column in the checked example.

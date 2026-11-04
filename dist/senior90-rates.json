@@ -1,0 +1,345 @@
+{
+  "product": "senior90",
+  "name": "เมืองไทย สบายใจ 90/90 (เพื่อผู้สูงอายุ)",
+  "source": "User supplied source-1-premiums.png: exact annual and monthly premium rates per sum 1,000 baht; no tax portion supplied.",
+  "rates": [
+    {
+      "age": 50,
+      "male": [
+        53
+      ],
+      "female": [
+        44
+      ],
+      "monthly": {
+        "male": 4.77,
+        "female": 3.96
+      }
+    },
+    {
+      "age": 51,
+      "male": [
+        55
+      ],
+      "female": [
+        45
+      ],
+      "monthly": {
+        "male": 4.95,
+        "female": 4.05
+      }
+    },
+    {
+      "age": 52,
+      "male": [
+        57
+      ],
+      "female": [
+        47
+      ],
+      "monthly": {
+        "male": 5.13,
+        "female": 4.23
+      }
+    },
+    {
+      "age": 53,
+      "male": [
+        59
+      ],
+      "female": [
+        49
+      ],
+      "monthly": {
+        "male": 5.31,
+        "female": 4.41
+      }
+    },
+    {
+      "age": 54,
+      "male": [
+        61
+      ],
+      "female": [
+        51
+      ],
+      "monthly": {
+        "male": 5.49,
+        "female": 4.59
+      }
+    },
+    {
+      "age": 55,
+      "male": [
+        63
+      ],
+      "female": [
+        52
+      ],
+      "monthly": {
+        "male": 5.67,
+        "female": 4.68
+      }
+    },
+    {
+      "age": 56,
+      "male": [
+        65
+      ],
+      "female": [
+        54
+      ],
+      "monthly": {
+        "male": 5.85,
+        "female": 4.86
+      }
+    },
+    {
+      "age": 57,
+      "male": [
+        68
+      ],
+      "female": [
+        56
+      ],
+      "monthly": {
+        "male": 6.12,
+        "female": 5.04
+      }
+    },
+    {
+      "age": 58,
+      "male": [
+        71
+      ],
+      "female": [
+        59
+      ],
+      "monthly": {
+        "male": 6.39,
+        "female": 5.31
+      }
+    },
+    {
+      "age": 59,
+      "male": [
+        73
+      ],
+      "female": [
+        61
+      ],
+      "monthly": {
+        "male": 6.57,
+        "female": 5.49
+      }
+    },
+    {
+      "age": 60,
+      "male": [
+        76
+      ],
+      "female": [
+        63
+      ],
+      "monthly": {
+        "male": 6.84,
+        "female": 5.67
+      }
+    },
+    {
+      "age": 61,
+      "male": [
+        79
+      ],
+      "female": [
+        66
+      ],
+      "monthly": {
+        "male": 7.11,
+        "female": 5.94
+      }
+    },
+    {
+      "age": 62,
+      "male": [
+        82
+      ],
+      "female": [
+        69
+      ],
+      "monthly": {
+        "male": 7.38,
+        "female": 6.21
+      }
+    },
+    {
+      "age": 63,
+      "male": [
+        86
+      ],
+      "female": [
+        72
+      ],
+      "monthly": {
+        "male": 7.74,
+        "female": 6.48
+      }
+    },
+    {
+      "age": 64,
+      "male": [
+        89
+      ],
+      "female": [
+        75
+      ],
+      "monthly": {
+        "male": 8.01,
+        "female": 6.75
+      }
+    },
+    {
+      "age": 65,
+      "male": [
+        93
+      ],
+      "female": [
+        78
+      ],
+      "monthly": {
+        "male": 8.37,
+        "female": 7.02
+      }
+    },
+    {
+      "age": 66,
+      "male": [
+        97
+      ],
+      "female": [
+        81
+      ],
+      "monthly": {
+        "male": 8.73,
+        "female": 7.29
+      }
+    },
+    {
+      "age": 67,
+      "male": [
+        101
+      ],
+      "female": [
+        85
+      ],
+      "monthly": {
+        "male": 9.09,
+        "female": 7.65
+      }
+    },
+    {
+      "age": 68,
+      "male": [
+        105
+      ],
+      "female": [
+        88
+      ],
+      "monthly": {
+        "male": 9.45,
+        "female": 7.92
+      }
+    },
+    {
+      "age": 69,
+      "male": [
+        110
+      ],
+      "female": [
+        92
+      ],
+      "monthly": {
+        "male": 9.9,
+        "female": 8.28
+      }
+    },
+    {
+      "age": 70,
+      "male": [
+        115
+      ],
+      "female": [
+        97
+      ],
+      "monthly": {
+        "male": 10.35,
+        "female": 8.73
+      }
+    },
+    {
+      "age": 71,
+      "male": [
+        120
+      ],
+      "female": [
+        102
+      ],
+      "monthly": {
+        "male": 10.8,
+        "female": 9.18
+      }
+    },
+    {
+      "age": 72,
+      "male": [
+        126
+      ],
+      "female": [
+        107
+      ],
+      "monthly": {
+        "male": 11.34,
+        "female": 9.63
+      }
+    },
+    {
+      "age": 73,
+      "male": [
+        132
+      ],
+      "female": [
+        113
+      ],
+      "monthly": {
+        "male": 11.88,
+        "female": 10.17
+      }
+    },
+    {
+      "age": 74,
+      "male": [
+        139
+      ],
+      "female": [
+        119
+      ],
+      "monthly": {
+        "male": 12.51,
+        "female": 10.71
+      }
+    },
+    {
+      "age": 75,
+      "male": [
+        143
+      ],
+      "female": [
+        124
+      ],
+      "monthly": {
+        "male": 12.87,
+        "female": 11.16
+      }
+    }
+  ]
+}

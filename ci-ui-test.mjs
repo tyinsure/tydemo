@@ -1,0 +1,24 @@
+import assert from 'node:assert/strict';
+import fs from 'node:fs/promises';
+const html=await fs.readFile('dist/health.html','utf8');
+const nodes=Object.fromEntries([...html.matchAll(/id="([^"]+)"/g)].map(m=>[m[1],{value:'',checked:false,disabled:false,hidden:false,innerHTML:'',textContent:'',events:{},classList:{toggle(){},remove(){},add(){}},addEventListener(t,fn){this.events[t]=fn;},replaceChildren(){this.innerHTML='';},remove(){},options:[],setAttribute(){}}]));
+Object.assign(nodes.age,{value:'35'});nodes.amount.value='1000000';nodes.frequency.value='annual';nodes['main-plan'].value='smart9920';nodes['ci-sum'].value='1000000';
+nodes['health-type'].value='none';nodes['health-benefit'].value='5000000';nodes['care-benefit'].value='5000000';nodes['care-condition'].value='both';nodes['pa-plan'].value='2';
+const radio={value:'male',addEventListener(){}};
+globalThis.document={getElementById:id=>nodes[id],querySelector:()=>radio,querySelectorAll:()=>[radio],body:{classList:{toggle(){}}}};
+globalThis.fetch=async url=>({ok:true,json:async()=>JSON.parse(await fs.readFile(new URL('./dist/'+String(url).replace('./',''),import.meta.url)))});
+await import('./dist/health.mjs');
+assert.equal(nodes['ci-controls'].hidden,true);assert.equal(nodes['ci-premium-heading'].hidden,true);assert.equal(nodes.pdf.disabled,true);
+nodes['ci-enabled'].checked=true;nodes['ci-enabled'].events.change();
+assert.equal(nodes['ci-controls'].hidden,false);assert.equal(nodes['ci-sum'].disabled,false);assert.equal(nodes.error.hidden,true);assert.equal(nodes.pdf.disabled,false);
+assert.equal(nodes['ci-premium'].textContent,'4,850.00 บาท/ปี');assert.ok(nodes['ci-benefits'].innerHTML.includes('250,000.00'));assert.ok(nodes['customer-summary-text'].value.includes('ซีไอ เพอร์เฟค แคร์'));
+assert.ok(nodes['schedule-body'].innerHTML.includes('<td>4,850.00</td>'));
+nodes['ci-sum'].value='1500000';nodes['ci-sum'].events.input();assert.ok(nodes['ci-premium'].textContent.includes('7,275.00'));
+nodes.frequency.value='monthly';nodes.frequency.events.change();assert.ok(nodes['ci-premium'].textContent.includes('640.50'));assert.equal(nodes['ci-sum'].value,'1500000');
+radio.value='female';nodes.frequency.events.change();assert.ok(nodes['ci-premium'].textContent.includes('565.50'));
+for(const ciSum of ['',0,-1,'1.001']){nodes['ci-sum'].value=ciSum;nodes['ci-sum'].events.input();assert.equal(nodes.error.hidden,false);assert.equal(nodes.pdf.disabled,true);assert.equal(nodes['schedule-body'].innerHTML,'');assert.equal(nodes['ci-benefits'].innerHTML,'');}
+nodes['ci-sum'].value='1000000';nodes.age.value='66';nodes.age.events.input();assert.ok(nodes.error.textContent.includes('ต่ออายุเท่านั้น'));assert.equal(nodes.pdf.disabled,true);
+nodes.age.value='35';nodes.age.events.input();assert.equal(nodes.error.hidden,true);
+nodes['ci-enabled'].checked=false;nodes['ci-enabled'].events.change();assert.equal(nodes['ci-controls'].hidden,true);assert.equal(nodes['ci-cost'].hidden,true);assert.equal(nodes['ci-premium-heading'].hidden,true);assert.equal(nodes['ci-sum'].disabled,true);assert.equal(nodes.pdf.disabled,true);assert.ok(!nodes['customer-summary-text'].value.includes('ซีไอ เพอร์เฟค แคร์'));
+nodes['ci-enabled'].checked=true;nodes['ci-enabled'].events.change();assert.equal(nodes['ci-sum'].value,'1000000');assert.equal(nodes.pdf.disabled,false);
+console.log('PASS: CI toggle, editable/preserved sum, sex/frequency updates, benefits and annual column, invalid inputs, renewal limit, disabling and recovery');
