@@ -1,3 +1,4 @@
+import {drawPDFDisclaimer} from './pdf-contact-link.mjs';
 import {LINE_CONTACT_TEXT} from './pdf-contact-link.mjs';
 import {dhealthBenefits,DHEALTH_WAITING} from './dhealth-pdf-summary.mjs';
 const W=595.28,H=841.89,M=28,WIDTH=W-2*M;
@@ -94,5 +95,5 @@ export function drawExtraHealthSummary(canvas,r,kind,index,total,scale=3){
    });
   }
  }
- p.footer(y,index,total);return canvas;
+ p.footer(y,index,total);drawPDFDisclaimer(canvas.getContext('2d'));return canvas;
 }

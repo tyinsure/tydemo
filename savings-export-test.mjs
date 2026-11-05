@@ -21,3 +21,11 @@ for(const plan of ['standard','pro'])for(const age of [0,35,71,80])for(const mod
  cases++;
 }
 console.log(`PASS: ${cases} savings export cases, sum/premium modes, 16 correct ages, merged contractual refunds, index separation, numeric XLSX/A4 and PDF layout/content`);
+
+for(const [returnMode,annualReturn,indexEnd,expected] of [['annual',3,357.45,'3%'],['annual',5,476.21,'5%'],['annual',-1,197.98,'-1%'],['index',null,357.45,'3%'],['index',null,230,'0%'],['index',null,0,'-100%']]){
+ const r=calculateSavings({plan:'pro',age:35,mode:'sum',amount:1000000,simulate:true,returnMode,annualReturn,indexStart:230,indexEnd,fxStart:34,fxEnd:34});
+ const data=savingsReportData(r),header=data.headers.at(-1).replaceAll('\n','');
+ assert.equal(header,'เงินปันผลหากได้ผลตอบแทน '+expected+'(บาท)');
+ assert.ok(savingsExcelParts(r)['xl/worksheets/sheet1.xml'].includes(expected));
+}
+console.log('PASS: dividend headings follow chosen annual percentages and calculated index returns, including negative/zero returns');

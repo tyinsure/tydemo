@@ -1,3 +1,4 @@
+import {drawPDFDisclaimer} from './pdf-contact-link.mjs';
 import {elapsedYearLabel} from './elapsed-year.mjs';
 import {scheduleUnit} from './schedule-premium-view.mjs';
 import {schedulePremiumValues} from './legacy-schedule-view.mjs';
@@ -43,7 +44,7 @@ export function drawPDFPage(canvas,r,mode,layout,index,total,scale=3){
   }else text(`PA Easy Plan ${r.rider.name} · เบี้ยสัญญาเพิ่มเติมปรับตามอายุ`,M,104,{size:8,color:'#A13362'});
  }
  const scheduleDisplay=r.schedulePremiumDisplay,unit=scheduleUnit(r,scheduleDisplay);
- const headers=withRider?[['อายุ','ปีที่ (เริ่ม 0)'],['เบี้ยประกันชีวิต',`(บาท/${unit})`],['เบี้ยPA',`(บาท/${unit})`],[scheduleDisplay?'เบี้ยประกันรวม':'เบี้ยหลักสะสม',scheduleDisplay?`(บาท/${unit})`:'(บาท)'],['ประกันชีวิต*','(บาท)'],['เงินครบสัญญา','(บาท)']]:legacy?[['อายุ','ปีที่ (เริ่ม 0)'],['เบี้ยในช่วง','(บาท)'],['เบี้ยสะสม','(บาท)'],['ประกันชีวิต*','(บาท)'],['เงินครบสัญญา','(บาท)']]:[['อายุ','ปีที่ (เริ่ม 0)'],['เบี้ยที่ชำระ',r.plan.kind==='single_premium'?'(บาท)':`(บาท/${unit})`],['อัตรา','บำนาญ'],['เงินบำนาญ','(บาท/ปี)'],['บำนาญสะสม','(บาท)'],['ประกันชีวิต*','(บาท)']];
+ const headers=withRider?[['อายุ'],['เบี้ยประกันชีวิต',`(บาท/${unit})`],['เบี้ยPA',`(บาท/${unit})`],[scheduleDisplay?'เบี้ยประกันรวม':'เบี้ยหลักสะสม',scheduleDisplay?`(บาท/${unit})`:'(บาท)'],['ประกันชีวิต*','(บาท)'],['เงินครบสัญญา','(บาท)']]:legacy?[['อายุ'],['เบี้ยในช่วง','(บาท)'],['เบี้ยสะสม','(บาท)'],['ประกันชีวิต*','(บาท)'],['เงินครบสัญญา','(บาท)']]:[['อายุ'],['เบี้ยที่ชำระ',r.plan.kind==='single_premium'?'(บาท)':`(บาท/${unit})`],['อัตรา','บำนาญ'],['เงินบำนาญ','(บาท/ปี)'],['บำนาญสะสม','(บาท)'],['ประกันชีวิต*','(บาท)']];
  c.fillStyle='#A13362';c.fillRect(M,layout.top,W-2*M,36);
  let x=M;headers.forEach((lines,j)=>{lines.forEach((s,k)=>text(s,x+widths[j]/2,layout.top+11+k*14,{size:j===0&&k===1?6:9,color:'#FFFFFF',bold:true,align:'center'}));x+=widths[j];});
  layout.rows.forEach((row,i)=>{
@@ -62,7 +63,7 @@ export function drawPDFPage(canvas,r,mode,layout,index,total,scale=3){
  if(withRider)text(scheduleDisplay==='modal'?'ตารางเบี้ยต่องวดตามโหมดชำระ กลุ่มอาชีพ 1 การต่ออายุขึ้นกับเงื่อนไข ไม่มีอัตราไม่ใช่เบี้ยฟรี':'ตาราง PA รวมทุกงวดต่อปีตามอายุ กลุ่มอาชีพ 1 การต่ออายุขึ้นกับเงื่อนไข ไม่มีอัตราไม่ใช่เบี้ยฟรี',M,800,{size:7.5,maxWidth:W-2*M});
  text(LINE_CONTACT_TEXT,M,withRider?819:809,{size:8,color:'#338169'});
  text(`หน้า ${index+1} / ${total}`,W-M,withRider?819:809,{size:8,color:'#877b87',align:'right'});
- return canvas;
+ drawPDFDisclaimer(canvas.getContext('2d'));return canvas;
 }
 export async function createPDFReport(r,mode,{createCanvas=()=>document.createElement('canvas'),loadFont=()=>document.fonts.load('11px Sarabun','สรุปแผนบำนาญ')}={}){
  const [{PDFDocument,PDFString}]=await Promise.all([import('./assets/pdf-lib.min.mjs'),loadFont()]);

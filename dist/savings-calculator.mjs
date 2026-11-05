@@ -9,7 +9,7 @@ export function calculateSavings(input){
  const sum=input.mode==='premium'?amount*1000/rate:amount;
  if(sum<20000-1e-7)throw Error('ทุนประกันขั้นต่ำ 20,000 บาท');
  const premium=round(sum*rate/1000),totalPremium=round(premium*6),maturity=round(Math.max(sum*6,totalPremium*1.01));
- let indexBenefit=null,assumedAnnualReturn=null,projectedIndexEnd=null;
+ let indexBenefit=null,assumedAnnualReturn=null,projectedIndexEnd=null,indexReturnPercent=null;
  if(input.simulate){
  const f=Number(input.fxStart),g=Number(input.fxEnd);
  if([input.fxStart,input.fxEnd].some(x=>x==null||String(x).trim()==='')||![f,g].every(Number.isFinite)||f<=0||g<=0)throw Error('กรุณาระบุอัตราแลกเปลี่ยนให้ครบและมากกว่า 0');
@@ -26,6 +26,7 @@ export function calculateSavings(input){
   if([input.indexStart,input.indexEnd].some(x=>x==null||String(x).trim()==='')||![a,b].every(Number.isFinite)||a<=0||b<0)throw Error('กรุณาระบุดัชนีให้ครบ ดัชนีเริ่มต้นต้องมากกว่า 0 และดัชนีสุดท้ายต้องไม่ติดลบ');
   growth=b/a-1;
  }
+ indexReturnPercent=assumedAnnualReturn??(Math.pow(1+growth,12/179)-1)*100;
  indexBenefit=round(sum*6*g/f*plan.pr*Math.max(0,growth));
  if(!Number.isFinite(indexBenefit))throw Error('ผลตอบแทนสูงเกินขอบเขตที่คำนวณได้ กรุณาลดค่าที่ระบุ');
  }
@@ -41,5 +42,10 @@ export function calculateSavings(input){
  });
  const cashTotal=round(cash*7),guaranteedTotal=round(cashTotal+maturity);
  const projectedTotal=indexBenefit===null?null:round(guaranteedTotal+indexBenefit),projectedGain=projectedTotal===null?null:round(projectedTotal-totalPremium);
- return{projectedIndexEnd,assumedAnnualReturn,projectedTotal,projectedGain,plan,age,sum,rate,premium,totalPremium,maturity,cash,cashTotal,guaranteedTotal,indexBenefit,rows};
+ return{indexReturnPercent,projectedIndexEnd,assumedAnnualReturn,projectedTotal,projectedGain,plan,age,sum,rate,premium,totalPremium,maturity,cash,cashTotal,guaranteedTotal,indexBenefit,rows};
+}
+
+export function savingsDividendLabel(r){
+ const percent=r.indexReturnPercent;
+ return 'เงินปันผลหากได้ผลตอบแทน'+(Number.isFinite(percent)?' '+Number(percent.toFixed(2))+'%':'');
 }

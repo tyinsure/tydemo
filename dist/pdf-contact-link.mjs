@@ -12,3 +12,9 @@ export function addLineContactLink(pdf,page,PDFString,{withRider,textWidth}){
  });
  page.node.addAnnot(pdf.context.register(annotation));
 }
+
+export const PDF_DISCLAIMER='เอกสารนี้จัดทำเพื่อเป็นข้อมูลสำหรับใช้ประกอบการตัดสินใจ โดยอ้างอิงข้อมูลทั้งหมดจากบริษัทเท่านั้น ไม่ใช่ใบเสนอขาย';
+export function drawPDFDisclaimer(context){
+ context.font='8px Sarabun';context.fillStyle='#766775';context.textAlign='left';context.textBaseline='top';
+ context.fillText(PDF_DISCLAIMER,28,830,539.28);
+}

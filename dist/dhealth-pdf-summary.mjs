@@ -1,3 +1,4 @@
+import {drawPDFDisclaimer} from './pdf-contact-link.mjs';
 import {LINE_CONTACT_TEXT} from './pdf-contact-link.mjs';
 const W=595.28,H=841.89,M=28,COL=411;
 export function dhealthBenefits(benefit){
@@ -54,5 +55,5 @@ export function drawDHealthBenefits(canvas,r,index,total,scale){
  if(y>799)throw Error('สรุป D Health Lite เกินพื้นที่ A4');
  text('สรุปเพื่อประกอบการพิจารณา รายละเอียดเป็นไปตามเงื่อนไขสัญญาเพิ่มเติม',M,799,7.5,'#766775');
  text(LINE_CONTACT_TEXT,M,819,8,'#338169');text(`หน้า ${index+1} / ${total}`,W-95,819,8,'#877b87');
- return canvas;
+ drawPDFDisclaimer(canvas.getContext('2d'));return canvas;
 }

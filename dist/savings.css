@@ -3,3 +3,52 @@
 .savings-page .maturity-label{display:block;font-size:9px;color:var(--pink)}
 
 .savings-page .export-actions{flex-wrap:wrap}.savings-page #export-status{margin:0 24px 12px}@media print{.savings-page .mode-tabs,.savings-page .export-actions,.savings-page #export-status{display:none!important}}
+/* Savings schedule: readable columns, contained scrolling and age cards on phones. */
+.savings-page .savings-schedule{overflow:hidden;min-width:0;border-color:#e6d4df}
+.savings-schedule .schedule-header{background:linear-gradient(120deg,#fff,#fcf5f8);gap:24px;align-items:center;border-bottom:1px solid #eadce4}
+.savings-schedule .schedule-header h2{margin:4px 0 0}
+.savings-schedule .export-actions{display:flex;gap:8px;align-items:center}
+.savings-schedule .export-actions button{min-height:42px;margin:0;font-size:12px}
+.savings-page .savings-schedule #export-status:empty{display:none}
+.savings-page .savings-schedule #export-status:not(:empty){margin:12px 24px}
+.saving-scroll-hint{display:none;font-size:11px;color:#927383;margin:12px 24px}
+.savings-page .savings-schedule table{table-layout:fixed;min-width:860px;white-space:normal;font-size:13px}
+.savings-page .savings-schedule th{background:#f8edf3!important;color:#8c365d;font-size:12px;font-weight:600;line-height:1.65;padding:17px 18px;border-bottom:1px solid #e4cbd8;vertical-align:middle}
+.savings-page .savings-schedule th small{color:#a18091;font-size:10px}
+.savings-page .savings-schedule td{padding:15px 18px;white-space:nowrap;line-height:1.65}
+.savings-page .savings-schedule th:first-child,.savings-page .savings-schedule td:first-child{width:112px;min-width:112px;position:sticky;left:0;padding-left:24px;background:#fff;box-shadow:1px 0 #eee0e8;z-index:2}
+.savings-page .savings-schedule th:first-child{z-index:4}
+.savings-page .savings-schedule td .phase{display:block;margin-top:2px}
+.savings-page .savings-schedule tbody tr:nth-child(even) td{background:#fcf9fb}
+.savings-page .savings-schedule tbody tr:last-child td{background:#faeaf2;color:#9d2f60;font-weight:600;border-top:1px solid #e6c5d5}
+.savings-page .savings-schedule tbody tr:hover td{background:#fff3f8}
+.savings-page .savings-schedule .table-scroll{max-height:580px;scrollbar-width:thin;scrollbar-color:#d5adbf #faf5f8}
+.savings-page .saving-table-note{padding-top:18px;border-top:1px solid #f0e6eb;margin:0;color:#927c8a;line-height:1.9}
+.savings-mobile-schedule{display:none}
+@media(min-width:601px) and (max-width:1100px){.saving-scroll-hint{display:block}.savings-schedule .schedule-header{align-items:flex-start;flex-wrap:wrap}.savings-schedule .export-actions{flex-wrap:wrap}.savings-page .workspace{grid-template-columns:300px minmax(0,1fr)}.savings-page .results{min-width:0}.savings-page .saving-metric{padding:16px}}
+@media(max-width:600px){
+ .savings-page .savings-schedule .schedule-header{padding:20px 18px;display:block}
+ .savings-schedule .schedule-header h2{font-size:21px}
+ .savings-schedule .export-actions{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px;margin-top:16px}
+ .savings-schedule .export-actions button{width:100%;padding:10px 6px;font-size:11px;white-space:normal}
+ .savings-schedule .export-actions #print{grid-column:1/-1}
+ .savings-page .savings-desktop-schedule,.saving-scroll-hint{display:none}
+ .savings-mobile-schedule{display:grid;gap:10px;padding:16px;max-height:640px;overflow:auto;background:#fcf9fb;overscroll-behavior:contain}
+ .saving-age-card{min-width:0;border:1px solid #e9d8e2;border-radius:12px;background:#fff;overflow:hidden}
+ .saving-age-card summary{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1.2fr) 14px;gap:10px;align-items:center;padding:16px 14px;cursor:pointer;list-style:none}
+ .saving-age-card summary::-webkit-details-marker{display:none}
+ .saving-age-card summary:after{content:'+';color:#a13362;font-size:20px;line-height:1}
+ .saving-age-card[open] summary:after{content:'−'}
+ .saving-age-card summary strong{display:block;font-size:14px;color:#36283b;font-variant-numeric:tabular-nums;overflow-wrap:anywhere}
+ .saving-age-card summary small{display:block;font-size:10px;color:#a08a98;margin-top:3px}
+ .saving-age-premium{text-align:right}.saving-age-card summary .saving-age-premium strong{font-size:13px;color:#a13362}
+ .saving-age-card dl{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:0;margin:0;padding:0 14px 6px;border-top:1px solid #f0e5eb}
+ .saving-age-card dl>div{padding:12px 8px 12px 0;min-width:0;border-bottom:1px solid #f4edf1}
+ .saving-age-card dl>div:last-child{grid-column:1/-1;border-bottom:0}
+ .saving-age-card dt{font-size:10px;color:#9a7d8d;line-height:1.7;margin:0;white-space:normal}
+ .saving-age-card dd{font-size:13px;font-weight:600;color:#5c4051;margin:5px 0 0;overflow-wrap:anywhere;font-variant-numeric:tabular-nums}
+ .saving-age-maturity summary{background:#f9eaf1}.saving-age-maturity{border-color:#d7a7bf}
+ .savings-page .saving-table-note{padding:16px;font-size:10px}
+ .saving-age-card summary:focus-visible{outline:2px solid #b64070;outline-offset:-3px}
+}
+@media print{.savings-page .savings-desktop-schedule{display:block!important}.savings-page .savings-mobile-schedule,.saving-scroll-hint{display:none!important}.savings-page .savings-schedule table{min-width:0;font-size:9px;table-layout:auto}.savings-page .savings-schedule th:first-child,.savings-page .savings-schedule td:first-child{width:auto;min-width:0;box-shadow:none}.savings-page .savings-schedule .table-scroll{max-height:none}.savings-schedule .schedule-header{background:#fff}}

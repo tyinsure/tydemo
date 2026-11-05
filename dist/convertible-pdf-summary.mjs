@@ -1,3 +1,4 @@
+import {drawPDFDisclaimer} from './pdf-contact-link.mjs';
 import {LINE_CONTACT_TEXT} from './pdf-contact-link.mjs';
 export function drawConvertibleSummary(canvas,r,index,total,scale){
  const W=595.28,H=841.89,M=28;
@@ -13,5 +14,5 @@ export function drawConvertibleSummary(canvas,r,index,total,scale){
  paragraph('แบบจำลองนี้สมมติถือ D Health Lite ต่อเนื่องจากอายุเริ่มประกันที่ระบุ การอนุมัติใช้สิทธิ์เป็นไปตามเงื่อนไขบริษัท');
  if(y>790)throw Error('สรุป Convertible Option เกินพื้นที่ A4');
  text(LINE_CONTACT_TEXT,819,8,'#338169');c.textAlign='right';c.fillStyle='#877b87';c.fillText(`หน้า ${index+1} / ${total}`,W-M,819);
- return canvas;
+ drawPDFDisclaimer(canvas.getContext('2d'));return canvas;
 }

@@ -1,3 +1,4 @@
+import {drawPDFDisclaimer} from './pdf-contact-link.mjs';
 import {LINE_CONTACT_TEXT} from './pdf-contact-link.mjs';
 export function drawOPDBenefits(canvas,r,index,total,scale=3){
  const W=595.28,H=841.89,M=28;canvas.width=Math.ceil(W*scale);canvas.height=Math.ceil(H*scale);
@@ -20,5 +21,5 @@ export function drawOPDBenefits(canvas,r,index,total,scale=3){
  for(const term of terms.slice(1))paragraph(term,9.5,9);
  if(y>756)throw Error('ข้อความ OPD เกินพื้นที่ A4');
  text(LINE_CONTACT_TEXT,M,819,8,'#338169');text(`หน้า ${index+1} / ${total}`,510,819,8,'#877b87');
- return canvas;
+ drawPDFDisclaimer(canvas.getContext('2d'));return canvas;
 }

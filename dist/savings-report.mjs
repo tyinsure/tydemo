@@ -1,8 +1,10 @@
+import {savingsDividendLabel} from './savings-calculator.mjs';
 import {elapsedYearLabel} from './elapsed-year.mjs';
 import {zipParts} from './excel-export.mjs';
 import {LINE_CONTACT_TEXT,addLineContactLink} from './pdf-contact-link.mjs';
 const money=n=>n.toLocaleString('th-TH',{minimumFractionDigits:2,maximumFractionDigits:2});
-export const SAVINGS_DISCLAIMER='เอกสารนี้จัดทำเพื่อเป็นข้อมูลเพื่อใช้ประกอบการตัดสินใจเท่านั้น ไม่ใช่ใบเสนอขาย';
+export {PDF_DISCLAIMER as SAVINGS_DISCLAIMER} from './pdf-contact-link.mjs';
+import {PDF_DISCLAIMER as SAVINGS_DISCLAIMER} from './pdf-contact-link.mjs';
 export function savingsReportData(r,{gender='male',mode='sum',fxStart=34,fxEnd=34}={}){
  const summary=[['ทุนประกัน',r.sum],['เบี้ยประกันรายปี',r.premium],['เบี้ยรวม 6 ปี',r.totalPremium],['เงินคืนระหว่างสัญญารวม',r.cashTotal],['เงินครบสัญญา',r.maturity],['ผลประโยชน์การันตีรวม',r.guaranteedTotal]];
  if(r.indexBenefit!==null)summary.push(['ผลตอบแทนดัชนีคาดการณ์ (ไม่การันตี)',r.indexBenefit],['ยอดรับรวมคาดการณ์ (รวมเงินคืน)',r.projectedTotal],['ส่วนต่างยอดรับคาดการณ์กับเบี้ยรวม',r.projectedGain]);
@@ -17,7 +19,7 @@ export function savingsReportData(r,{gender='male',mode='sum',fxStart=34,fxEnd=3
   SAVINGS_DISCLAIMER
  ];
  return {title:r.plan.name,subtitle:`${gender==='male'?'ชาย':'หญิง'} อายุ ${r.age} ปี · ${mode==='premium'?'คำนวณจากเบี้ยประกัน':'คำนวณจากทุนประกัน'} · ชำระรายปี 6 ปี คุ้มครอง 15 ปี`,summary,assumptions,notes,
-  headers:['อายุ\n(ปี)','เบี้ยประกัน\n(บาท/ปี)','เบี้ยสะสม\n(บาท)','เงินคืนตามสัญญา\n(บาท)','ประกันชีวิต*\n(บาท)','ดัชนีจำลอง\nไม่การันตี (บาท)'],
+  headers:['อายุ\n(ปี)','เบี้ยประกัน\n(บาท/ปี)','เบี้ยสะสม\n(บาท)','เงินคืนตามสัญญา\n(บาท)','ประกันชีวิต*\n(บาท)',savingsDividendLabel(r).replace('หากได้ผลตอบแทน','หากได้\nผลตอบแทน')+'\n(บาท)'],
   rows:r.rows.map(row=>[row.age,row.premium,row.paid,Math.round((row.cash+row.maturity)*100)/100,row.life,row.indexBenefit])};
 }
 const xml=s=>String(s).replaceAll('&','&amp;').replaceAll('<','&lt;').replaceAll('>','&gt;').replaceAll('"','&quot;');
@@ -51,10 +53,10 @@ export function drawSavingsPDF(canvas,r,options,scale=3){
  y=wrapped(data.assumptions,M,y+8,W-2*M,8,11)+8;
  const widths=[35,98,102,108,98,98.28],top=y;
  c.fillStyle='#a13362';c.fillRect(M,y,W-2*M,33);let x=M;
- data.headers.forEach((h,i)=>{(i===0?'อายุ / ปีที่\nเริ่ม 0':h).split('\n').forEach((s,j)=>text(s,x+widths[i]/2,y+5+j*12,7.8,true,'#fff','center',widths[i]-6));x+=widths[i];});y+=33;
+ data.headers.forEach((h,i)=>{const lines=(i===0?'อายุ':h).split('\n');lines.forEach((s,j)=>text(s,x+widths[i]/2,y+5+j*(lines.length>2?9:12),lines.length>2?7.3:7.8,true,'#fff','center',widths[i]-6));x+=widths[i];});y+=33;
  data.rows.forEach((row,i)=>{c.fillStyle=i===15?'#f9eaf1':i%2?'#fff':'#fcfafb';c.fillRect(M,y,W-2*M,17);let x=M;row.forEach((value,j)=>{text(value===null?'—':j===0?value:money(value),j===0?x+widths[j]/2:x+widths[j]-4,y+(j===0?1:4),j===0?7:8,i===15,'#36283b',j===0?'center':'right',widths[j]-8);if(j===0)text(elapsedYearLabel(r,r.rows[i]),x+widths[j]/2,y+9,6,false,'#877b87','center',widths[j]-4);c.strokeStyle='#d9cbd3';c.lineWidth=.4;c.strokeRect(x,y,widths[j],17);x+=widths[j];});y+=17;});
  x=M;for(const w of widths){c.strokeRect(x,top,w,33);x+=w;}
- y+=10;for(const note of data.notes)y=wrapped(note,M,y,W-2*M,7.5,10)+4;
+ y+=10;y=wrapped(SAVINGS_DISCLAIMER,M,y,W-2*M,7.5,10)+4;
  if(y>795)throw Error('ข้อมูลยาวเกินพื้นที่ PDF กรุณาลดความยาวค่าที่ระบุ');
  text(LINE_CONTACT_TEXT,M,805,8,false,'#338169');text('หน้า 1 / 1',W-M,805,8,false,'#877b87','right');
  return canvas;

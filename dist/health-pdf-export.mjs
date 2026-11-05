@@ -1,3 +1,4 @@
+import {drawPDFDisclaimer} from './pdf-contact-link.mjs';
 import {elapsedYearLabel} from './elapsed-year.mjs';
 import {drawMaochaiExtra} from './maochai-extra-pdf.mjs';
 import {drawConvertibleSummary} from './convertible-pdf-summary.mjs';
@@ -44,7 +45,7 @@ function drawCIBenefits(canvas,r,index,total,scale){
   lines.forEach((line,j)=>text(line,M,507+i*52+j*16,10));
  });
  text(LINE_CONTACT_TEXT,M,819,8,'#338169');text(`หน้า ${index+1} / ${total}`,W-95,819,8,'#877b87',70);
- return canvas;
+ drawPDFDisclaimer(canvas.getContext('2d'));return canvas;
 }
 function drawDailyBenefits(canvas,r,index,total,scale){
  canvas.width=Math.ceil(W*scale);canvas.height=Math.ceil(H*scale);
@@ -62,7 +63,7 @@ function drawDailyBenefits(canvas,r,index,total,scale){
   if(line){text(line,M,y,10);y+=17;}y+=12;
  }
  text(LINE_CONTACT_TEXT,M,819,8,'#338169');text(`หน้า ${index+1} / ${total}`,W-95,819,8,'#877b87',70);
- return canvas;
+ drawPDFDisclaimer(canvas.getContext('2d'));return canvas;
 }
 export function drawPDFPage(canvas,r,mode,layout,index,total,scale=3){
  if(['elite','elite-extra','care'].includes(layout.kind))return drawExtraHealthSummary(canvas,r,layout.kind,index,total,scale);
@@ -102,7 +103,7 @@ export function drawPDFPage(canvas,r,mode,layout,index,total,scale=3){
   }else text(`สัญญาเพิ่มเติม ${r.ci||r.daily||r.opd?r.reportRiderLabel:r.rider.name} · ${r.daily?'เบี้ยค่าชดเชยรายวันคงที่ตามอายุเริ่มสัญญา':'เบี้ยสัญญาเพิ่มเติมปรับตามอายุ'}`,M,104,{size:8,color:'#A13362',maxWidth:W-2*M});
  }
  const unit=scheduleUnit(r,r.schedulePremiumDisplay);
- const headers=withRider?[['อายุ','ปีที่ (เริ่ม 0)'],['เบี้ยประกันชีวิต',`(บาท/${unit})`],['เบี้ยเพิ่มเติม',`รวม (บาท/${unit})`],['เบี้ยประกันรวม',`(บาท/${unit})`],['ประกันชีวิต*','(บาท)'],['เงินครบสัญญา','(บาท)']]:legacy?[['อายุ','ปีที่ (เริ่ม 0)'],['เบี้ยในช่วง',`(บาท/${unit})`],['เบี้ยประกันรวม',`(บาท/${unit})`],['ประกันชีวิต*','(บาท)'],['เงินครบสัญญา','(บาท)']]:[['อายุ','ปีที่ (เริ่ม 0)'],['เบี้ยที่ชำระ',r.plan.kind==='single_premium'?'(บาท)':'(บาท/ปี)'],['อัตรา','บำนาญ'],['เงินบำนาญ','(บาท/ปี)'],['บำนาญสะสม','(บาท)'],['ประกันชีวิต*','(บาท)']];
+ const headers=withRider?[['อายุ'],['เบี้ยประกันชีวิต',`(บาท/${unit})`],['เบี้ยเพิ่มเติม',`รวม (บาท/${unit})`],['เบี้ยประกันรวม',`(บาท/${unit})`],['ประกันชีวิต*','(บาท)'],['เงินครบสัญญา','(บาท)']]:legacy?[['อายุ'],['เบี้ยในช่วง',`(บาท/${unit})`],['เบี้ยประกันรวม',`(บาท/${unit})`],['ประกันชีวิต*','(บาท)'],['เงินครบสัญญา','(บาท)']]:[['อายุ'],['เบี้ยที่ชำระ',r.plan.kind==='single_premium'?'(บาท)':'(บาท/ปี)'],['อัตรา','บำนาญ'],['เงินบำนาญ','(บาท/ปี)'],['บำนาญสะสม','(บาท)'],['ประกันชีวิต*','(บาท)']];
  c.fillStyle='#A13362';c.fillRect(M,layout.top,W-2*M,36);
  let x=M;headers.forEach((lines,j)=>{lines.forEach((s,k)=>text(s,x+widths[j]/2,layout.top+11+k*14,{size:j===0&&k===1?6:9,color:'#FFFFFF',bold:true,align:'center'}));x+=widths[j];});
  layout.rows.forEach((row,i)=>{
@@ -120,7 +121,7 @@ export function drawPDFPage(canvas,r,mode,layout,index,total,scale=3){
  if(withRider)text(r.schedulePremiumDisplay==='modal'?'ตารางเบี้ยเพิ่มเติมต่องวดตามโหมดชำระ กลุ่มอาชีพ 1–2 การต่ออายุขึ้นกับเงื่อนไข ไม่มีอัตราไม่ใช่เบี้ยฟรี':'ตารางเบี้ยเพิ่มเติม รวมทุกงวดต่อปีตามอายุ กลุ่มอาชีพ 1–2 การต่ออายุขึ้นกับเงื่อนไข ไม่มีอัตราไม่ใช่เบี้ยฟรี',M,800,{size:7.5,maxWidth:W-2*M});
  text(LINE_CONTACT_TEXT,M,withRider?819:809,{size:8,color:'#338169'});
  text(`หน้า ${index+1} / ${total}`,W-M,withRider?819:809,{size:8,color:'#877b87',align:'right'});
- return canvas;
+ drawPDFDisclaimer(canvas.getContext('2d'));return canvas;
 }
 export async function createPDFReport(r,mode,{createCanvas=()=>document.createElement('canvas'),loadFont=()=>document.fonts.load('11px Sarabun','สรุปแผนบำนาญ')}={}){
  const [{PDFDocument,PDFString}]=await Promise.all([import('./assets/pdf-lib.min.mjs'),loadFont()]);

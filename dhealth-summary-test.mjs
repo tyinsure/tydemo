@@ -1,3 +1,4 @@
+import {PDF_DISCLAIMER} from './dist/pdf-contact-link.mjs';
 import assert from 'node:assert/strict';
 import {readFile} from 'node:fs/promises';
 import {dhealthBenefits,DHEALTH_WAITING} from './dist/dhealth-pdf-summary.mjs';
@@ -21,7 +22,7 @@ for(const benefit of [1000000,5000000]){
   const painted=[],c={scale(){},fillRect(){},measureText(s){return {width:String(s).length*5};},fillText(s,x,y){painted.push({s,x,y});}};
   drawPDFPage({getContext:()=>c},r,'sum',pages.at(-1),1,2,1);
   assert.equal(painted.filter(t=>t.s.startsWith('13.')).length,1);assert.ok(painted.some(t=>t.s===health.detail));
-  assert.ok(painted.every(t=>t.y<=819));assert.equal(painted.filter(t=>t.s==='ไม่คุ้มครอง').length,3);
+  assert.ok(painted.every(t=>t.y<=819||(t.s===PDF_DISCLAIMER&&t.y===830)));assert.equal(painted.filter(t=>t.s==='ไม่คุ้มครอง').length,3);
   assert.ok(!painted.some(t=>t.s==='180 วัน'||/อาณาเขตคุ้มครอง|ไทรอยด์/.test(t.s)));
   for(const id of ['2.4','6.1','6.2'])assert.equal(painted.filter(t=>t.s.startsWith(id+' ')).length,1);
  }

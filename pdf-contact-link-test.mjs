@@ -7,7 +7,7 @@ import {calculate} from './dist/calculator.mjs';
 import {calculateLegacy as legacy} from './dist/legacy-calculator.mjs';
 import {calculateLegacy as healthMain} from './dist/health-calculator.mjs';
 import {addHealthRider,healthReportResult} from './dist/health-rider.mjs';
-import {LINE_CONTACT_URL} from './dist/pdf-contact-link.mjs';
+import {LINE_CONTACT_URL,PDF_DISCLAIMER} from './dist/pdf-contact-link.mjs';
 const plans=JSON.parse(await fs.readFile('dist/plans.json')),rates=JSON.parse(await fs.readFile('dist/health-rates.json')),addons=JSON.parse(await fs.readFile('dist/health-premiums.json'));
 const input={age:35,gender:'male',mode:'sum',amount:1000000,frequency:'annual'};
 const rows=[
@@ -20,9 +20,10 @@ const rows=[
 const pixel='data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR42mP8/x8AAwMCAO+aF9sAAAAASUVORK5CYII=';
 let pages=0;
 for(const [create,r] of rows){
- const c={scale(){},fillRect(){},fillText(){},measureText:t=>({width:String(t).length*4}),beginPath(){},moveTo(){},lineTo(){},stroke(){}};
+ const drawn=[];const c={scale(){},fillRect(){},fillText(text){drawn.push(String(text));},measureText:t=>({width:String(t).length*4}),beginPath(){},moveTo(){},lineTo(){},stroke(){}};
  const blob=await create(r,'sum',{loadFont:async()=>{},createCanvas:()=>({getContext:()=>c,toDataURL:()=>pixel})});
  const pdf=await PDFDocument.load(await blob.arrayBuffer());
+ assert.equal(drawn.filter(t=>t===PDF_DISCLAIMER).length,pdf.getPageCount());
  for(const page of pdf.getPages()){
   const annotations=page.node.lookup(PDFName.of('Annots'),PDFArray);assert.equal(annotations.size(),1);
   const link=annotations.lookup(0,PDFDict),action=link.lookup(PDFName.of('A'),PDFDict);

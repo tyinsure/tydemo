@@ -1,3 +1,4 @@
+import {PDF_DISCLAIMER} from './dist/pdf-contact-link.mjs';
 import assert from 'node:assert/strict';
 import {readFile} from 'node:fs/promises';
 import {eliteBenefits,ELITE_EXTRA,ELITE_LIMITS,careBenefits,CARE_TREATMENTS} from './dist/extra-health-pdf-summary.mjs';
@@ -6,7 +7,7 @@ import {drawPDFPage,reportPageLayouts} from './dist/health-pdf-export.mjs';
 const data=JSON.parse(await readFile('dist/health-premiums.json'));
 const base={age:35,gender:'male',frequency:'annual'};
 function paint(r,kind){
- const texts=[],c={scale(){},fillRect(){},measureText(s){return {width:String(s).length*4};},fillText(s,x,y){assert.ok(y<=819);texts.push(String(s));}};
+ const texts=[],c={scale(){},fillRect(){},measureText(s){return {width:String(s).length*4};},fillText(s,x,y){assert.ok(y<=819||(s===PDF_DISCLAIMER&&y===830));texts.push(String(s));}};
  drawPDFPage({getContext:()=>c},r,'sum',{kind},0,1,1);assert.ok(!texts.some(s=>/NaN|undefined/.test(s)));return texts.join('\n');
 }
 assert.deepEqual(ELITE_LIMITS,[20000000,40000000,75000000,100000000]);

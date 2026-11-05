@@ -1,3 +1,4 @@
+import {drawPDFDisclaimer} from './pdf-contact-link.mjs';
 import {elapsedYear} from './elapsed-year.mjs';
 import {scheduleUnit,scheduleViewRow} from './schedule-premium-view.mjs';
 import {seniorMoney as money,seniorNotes,SENIOR_HEALTH_NOTE} from './senior-calculator.mjs';
@@ -71,7 +72,7 @@ export function drawSeniorPDFPage(canvas,r,page,index,total,scale=3){
  page.noteLines.forEach((s,i)=>text(s,28,y+28+i*13,9));
  text(r.product==='senior90'?'ผลประโยชน์ตามสัญญาหลักและสัญญาเพิ่มเติมที่เลือก · รายละเอียดตามกรมธรรม์':'* แสดงขั้นต่ำที่คำนวณได้ ยังไม่รวมมูลค่าเวนคืน · รายละเอียดตามหมายเหตุและกรมธรรม์',28,767,8);
  text(LINE_CONTACT_TEXT,28,809,8,'#338169');text(`หน้า ${index+1} / ${total}`,510,809,8);
- return canvas;
+ drawPDFDisclaimer(canvas.getContext('2d'));return canvas;
 }
 export async function createSeniorPDF(r,{createCanvas=()=>document.createElement('canvas'),loadFont=()=>document.fonts.load('9px Sarabun','วัยเก๋าคุ้มได้ใจ')}={}){
  const [{PDFDocument,PDFString}]=await Promise.all([import('./assets/pdf-lib.min.mjs'),loadFont()]);
