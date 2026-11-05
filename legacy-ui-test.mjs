@@ -5,14 +5,19 @@ const nodes={};for(const [,id] of html.matchAll(/id="([^"]+)"/g))nodes[id]={valu
 nodes.age.value='35';nodes.amount.value='1000000';nodes.frequency.value='annual';nodes['pa-plan'].value='1';nodes['pa-plan'].options=Array.from({length:7},(_,i)=>({value:String(i+1)}));
 const radio={value:'male',addEventListener(){}};
 const oldDocument=globalThis.document,oldFetch=globalThis.fetch;
-globalThis.document={getElementById:id=>nodes[id],querySelector:()=>radio,querySelectorAll:()=>[radio],body:{classList:{toggle(){}}}};
+globalThis.document={addEventListener(){},getElementById:id=>nodes[id],querySelector:()=>radio,querySelectorAll:()=>[radio],body:{classList:{toggle(){}}}};
+globalThis.location={search:''};
 globalThis.fetch=async()=>({ok:true,json:async()=>data});
 try{
  await import('./dist/legacy.mjs?ui-test');
  assert.equal(nodes['pa-enabled'].checked,true);assert.equal(nodes['pa-enabled'].disabled,true);assert.equal(nodes['pa-premium-heading'].hidden,false);assert.ok(nodes['customer-summary-text'].value.includes('PA Easy'));
  nodes['pa-enabled'].checked=true;nodes['pa-enabled'].events.change();assert.equal(nodes['pa-plan'].value,'1');assert.ok(nodes['pa-annual'].textContent.includes('1,300'));nodes['pa-plan'].value='2';nodes['pa-plan'].events.change();assert.ok(nodes['pa-annual'].textContent.includes('2,000'));nodes['pa-plan'].value='1';nodes['pa-plan'].events.change();assert.equal(nodes.pdf.disabled,false);assert.ok(nodes['customer-summary-text'].value.includes('กลุ่มอาชีพ 1'));
  assert.equal(nodes.pdf.disabled,false);assert.equal(nodes['pa-premium-heading'].hidden,false);assert.ok(nodes['schedule-body'].innerHTML.includes('rider-premium-value'));assert.ok(nodes['pa-annual'].textContent.includes('1,300'));assert.ok(nodes['customer-summary-text'].value.includes('PA Easy Plan Rider แผน 1'));
- assert.equal((nodes['schedule-body'].innerHTML.match(/class="total-premium-value">27,280\.00<\/td>/g)||[]).length,20); // annual main + PA, never cumulative
+ assert.ok(nodes['schedule-total-heading'].innerHTML.includes('เบี้ยประกันหลักสะสม'));
+ assert.ok(nodes['schedule-body'].innerHTML.includes('class="total-premium-value">25,980.00</td>'));
+ assert.ok(nodes['schedule-body'].innerHTML.includes('class="total-premium-value">51,960.00</td>'));
+ assert.equal((nodes['schedule-body'].innerHTML.match(/class="total-premium-value">519,600\.00<\/td>/g)||[]).length,46);
+ nodes['pa-plan'].value='2';nodes['pa-plan'].events.change();assert.ok(nodes['schedule-body'].innerHTML.includes('class="total-premium-value">51,960.00</td>'));nodes['pa-plan'].value='1';nodes['pa-plan'].events.change();
  nodes.frequency.value='monthly';nodes.frequency.events.change();assert.ok(nodes['pa-annual'].textContent.includes('114.40'));assert.ok(nodes['pa-annual'].textContent.includes('บาท/เดือน'));assert.ok(nodes['customer-summary-text'].value.includes('114.40 บาท/งวด'));assert.ok(nodes['schedule-body'].innerHTML.includes('1,372.80'));
  nodes['pa-plan'].value='7';nodes.age.value='61';nodes.age.events.input();assert.equal(nodes.pdf.disabled,true);assert.ok(nodes.error.textContent.includes('ไม่มีอัตรา'));
  nodes['pa-enabled'].checked=false;nodes['pa-enabled'].events.change();assert.equal(nodes['pa-enabled'].checked,true);assert.equal(nodes['pa-enabled'].disabled,true);assert.equal(nodes.pdf.disabled,true);assert.equal(nodes['pa-premium-heading'].hidden,false);

@@ -4,7 +4,8 @@ const xml=s=>String(s).replaceAll('&','&amp;').replaceAll('<','&lt;').replaceAll
 const cell=(ref,value,style)=>`<x:c r="${ref}" s="${style}" t="${typeof value==='number'?'n':'inlineStr'}">${typeof value==='number'?`<x:v>${Number.isFinite(value)?value:0}</x:v>`:`<x:is><x:t xml:space="preserve">${xml(value)}</x:t></x:is>`}</x:c>`;
 function styleFor(sheet,ref){return sheet.match(new RegExp(`<x:c r="${ref}" s="(\\d+)"`))[1];}
 export function reportParts(template,r,mode){
- const legacy=r.type==='legacy',withRider=legacy&&!!r.rider,lastCol=withRider?'G':'F',parts={...template};let sheet=parts['xl/worksheets/sheet1.xml'];
+ const premier=r.product==='premier991',wealth=['wealth995','premier995','premier9910','smart9999premier'].includes(r.product),fixedLegacy=premier||wealth,legacy=r.type==='legacy',withRider=legacy&&!!r.rider,lastCol=withRider?'G':'F',parts={...template};let sheet=parts['xl/worksheets/sheet1.xml'];
+ const cumulative=legacy&&r.legacyCumulativeMain===true;
  const rows=[...sheet.matchAll(/<x:row\b[^>]*>[\s\S]*?<\/x:row>/g)].slice(0,10).map(m=>m[0]);
  function put(row,col,value,sourceRef=col+row){
   const ref=col+row,pattern=new RegExp(`<x:c r="${ref}"[^>]*(?:\\/>|>[\\s\\S]*?<\\/x:c>)`),valueXml=cell(ref,value,styleFor(sheet,sourceRef));
@@ -15,22 +16,30 @@ export function reportParts(template,r,mode){
   put(2,'A','TYINSURE | สรุปแผนสร้างมรดก');put(6,'D',`เบี้ย${r.frequency.label} (บาท/งวด)`);put(7,'D','ครบสัญญา (อายุ)');put(8,'D','เงินครบสัญญา (บาท)');
   ['อายุ (ปี)','เบี้ยในช่วง\n(บาท)','เบี้ยสะสม\n(บาท)','ประกันชีวิต*\n(บาท)','เงินครบสัญญา\n(บาท)'].forEach((v,i)=>put(10,'ABCDEF'[i],v));
  }
+ if(fixedLegacy){put(10,'B','เบี้ยประกันชีวิต\n(บาท/ปี)');put(10,'C','เบี้ยประกันรวม\n(บาท/ปี)');}
  if(r.plan.family==='mt8560'){put(6,'D',`เบี้ย${r.frequency.label} (บาท/งวด)`);}
  if(r.plan.kind==='single_premium'){put(6,'D','เบี้ยชำระครั้งเดียว (บาท)');put(7,'A','ระยะชำระเบี้ย (ครั้ง)');put(10,'B','เบี้ยที่ชำระ\n(บาท)');}
+ if(fixedLegacy)put(10,'B','เบี้ยประกันชีวิต\n(บาท/ปี)');
  if(withRider){
   put(8,'A','เบี้ยหลักที่ชำระรวม (บาท)');
   put(9,'A',`PA Easy Plan ${r.rider.name} · อาชีพ ${r.rider.occupation} · เบี้ย PA ${r.frequency.label} ${r.rider.premium.toLocaleString('th-TH',{minimumFractionDigits:2,maximumFractionDigits:2})} บาท/งวด · รวมปีแรก ${r.combinedFirstYearAnnual.toLocaleString('th-TH',{minimumFractionDigits:2,maximumFractionDigits:2})} บาท/ปี`);
   ['อายุ\n(ปี)','เบี้ยประกันชีวิต\n(บาท/ปี)','เบี้ยPA\n(บาท/ปี)','เบี้ยหลักสะสม\n(บาท)','ประกันชีวิต*\n(บาท)','เงินครบสัญญา\n(บาท)'].forEach((v,i)=>put(10,'ABCDEFG'[i],v,'F10'));
  }
+ if(cumulative)put(10,withRider?'D':'C','เบี้ยประกันหลักสะสม\n(บาท)',withRider?'F10':'C10');
  for(const [row,c,f] of [[5,r.gender==='male'?'ชาย':'หญิง',r.age],[6,r.sum,r.premium],[7,r.payYears,legacy?99:r.plan.pensionAge],[8,r.totalPaid,legacy?r.maturityAmount:r.totalReceived]]){put(row,'C',c);put(row,'F',f);}
  if(r.plan.family==='mt8560'){put(7,'D','ช่วงรับบำนาญ (อายุ)');put(7,'F','60–85 ปี');}
  if(legacy){const unused=withRider?'G':'F';rows[9]=rows[9].replace(new RegExp(`<x:c r="${unused}10"[^>]*(?:\\/>|>[\\s\\S]*?<\\/x:c>)`),'');}
  r.schedule.forEach((item,i)=>{
-  const row=11+i,source=(legacy?[r.age,r.age+19,99]:[r.plan.pensionAge,71,76,81,86]).includes(item.age)?12:11;
-  const values=withRider?[item.age,item.pay,item.riderPremium??'ไม่มีอัตรา',item.paid,item.coverage,item.maturity]:legacy?[item.age,item.pay,item.paid,item.coverage,item.maturity]:[item.age,item.pay,item.pct,item.pension,item.received,item.coverage??'-'];
+  const row=11+i,source=(legacy?[r.age,r.age+(fixedLegacy?r.payYears-1:19),99]:[r.plan.pensionAge,71,76,81,86]).includes(item.age)?12:11;
+  const values=withRider?[item.age,item.pay,item.riderPremium??'ไม่มีอัตรา',item.paid,item.coverage,item.maturity]:legacy?[item.age,item.pay,fixedLegacy?item.pay:item.paid,item.coverage,item.maturity]:[item.age,item.pay,item.pct,item.pension,item.received,item.coverage??'-'];
+  if(cumulative)values[withRider?3:2]=item.paid;
   rows.push(`<x:row r="${row}" ht="25" customHeight="1">${values.map((v,j)=>{const col='ABCDEFG'[j];return cell(col+row,v,styleFor(sheet,(legacy?'AABBBBB'[j]:col)+source));}).join('')}</x:row>`);
  });
- const end=10+r.schedule.length,notes=legacy?[
+ const end=10+r.schedule.length,notes=fixedLegacy?[
+  '* ประกันชีวิตขั้นต่ำ = ค่าสูงกว่าระหว่างทุนประกัน 100% และเบี้ยสะสม 101% ยังไม่รวมมูลค่าเวนคืน',
+  (wealth?`ชำระเบี้ย ${r.payYears} ปี (ปีที่ 0–${r.payYears-1}) · ครบอายุ`:'ชำระเบี้ยครั้งเดียวในปีที่ 0 · ครบอายุ')+' 99 ปี รับค่าสูงกว่าระหว่างทุน 100% และเบี้ยที่ชำระแล้ว 101%',
+  'ทัก LINE @TYINSURE   https://line.me/R/ti/p/@tyinsure'
+ ]:legacy?[
   '* ความคุ้มครองขั้นต่ำ = ค่าสูงกว่าระหว่างทุนและเบี้ยสะสม ยังไม่รวมมูลค่าเวนคืน',
   'อายุ ณ ต้นปี เบี้ยสะสมคิดหลังชำระครบทุกงวดของปีนั้น แถวสุดท้ายครบอายุ 99 ปี',
   'ทัก LINE @TYINSURE   https://line.me/R/ti/p/@tyinsure'
@@ -39,6 +48,7 @@ export function reportParts(template,r,mode){
   'หลังเริ่มรับบำนาญ: เบี้ยสะสมหักเงินบำนาญสะสมที่ได้รับแล้ว (ไม่ต่ำกว่า 0 บาท)',
   'ทัก LINE @TYINSURE   https://line.me/R/ti/p/@tyinsure'
  ];
+ if(cumulative)notes.splice(2,0,'เบี้ยประกันหลักสะสมรวมทุกงวดตั้งแต่ปีแรกถึงปีนั้น เฉพาะสัญญาหลัก ไม่รวม PA (บาท)');
  if(r.plan.family==='mt8560')notes.splice(0,2,'* ก่อนบำนาญ: 100% ของทุนถึงอายุ 44 ปี อายุ 45–59 ปีเพิ่มปีละ 10% เป็น 110–250%', 'หลังรับบำนาญ อายุ 60–73 ปี: มูลค่าปัจจุบันของบำนาญที่ยังไม่ได้รับตามตารางรับรอง 15 ปี × ทุนประกัน ÷ 1,000 · อายุ 74–85 ปี: -', `เบี้ยต่องวด ${r.frequency.label} ตารางรวมทุกงวดในปีนั้น บำนาญ 12% อายุ 60–85 ปี`);
  if(withRider)notes.splice(2,0,
   `PA Easy Plan ${r.rider.name} · กลุ่มอาชีพ ${r.rider.occupation}${r.rider.holiday?' · รวมเบี้ยเพิ่มวันหยุดนักขัตฤกษ์แล้ว':''}`,

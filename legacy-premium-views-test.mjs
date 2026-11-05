@@ -16,7 +16,8 @@ const html=await fs.readFile('dist/legacy.html','utf8');assert.equal((html.match
 const nodes=Object.fromEntries([...html.matchAll(/id="([^"]+)"/g)].map(m=>[m[1],{value:'',checked:false,disabled:false,hidden:false,textContent:'',innerHTML:'',events:{},attrs:{},classList:{toggle(){},remove(){},add(){}},addEventListener(t,fn){this.events[t]=fn;},replaceChildren(){this.innerHTML='';},remove(){},options:[],setAttribute(k,v){this.attrs[k]=v;}}]));
 nodes.age.value='35';nodes.amount.value='10000';nodes.frequency.value='annual';nodes['pa-plan'].value='2';
 const radio={value:'male',addEventListener(){}};
-globalThis.document={getElementById:id=>nodes[id],querySelector:()=>radio,querySelectorAll:()=>[radio],body:{classList:{toggle(){}}}};
+globalThis.document={addEventListener(){},getElementById:id=>nodes[id],querySelector:()=>radio,querySelectorAll:()=>[radio],body:{classList:{toggle(){}}}};
+globalThis.location={search:''};
 globalThis.fetch=async()=>({ok:true,json:async()=>data});await import('./dist/legacy.mjs');
 assert.equal(nodes['pa-enabled'].checked,true);assert.equal(nodes['pa-enabled'].disabled,true);assert.equal(nodes['premium-cost'].hidden,false);
 for(const [id,label,unit] of [['annual','รายปี','ปี'],['semiannual','ราย 6 เดือน','6เดือน'],['quarterly','ราย 3 เดือน','3เดือน'],['monthly','รายเดือน','เดือน']]){
