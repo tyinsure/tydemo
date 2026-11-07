@@ -1,0 +1,13 @@
+const button=document.createElement('button');
+button.type='button';
+button.className='back-to-top';
+button.setAttribute('aria-label','กลับขึ้นด้านบนสุด');
+button.title='กลับขึ้นด้านบนสุด';
+button.innerHTML='<span aria-hidden="true">↑</span> Top';
+button.hidden=true;
+document.body.append(button);
+const update=()=>{button.hidden=window.scrollY<400;};
+window.addEventListener('scroll',update,{passive:true});
+window.addEventListener('pageshow',update);
+button.addEventListener('click',()=>window.scrollTo({top:0,behavior:window.matchMedia('(prefers-reduced-motion: reduce)').matches?'instant':'smooth'}));
+update();

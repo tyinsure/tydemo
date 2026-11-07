@@ -42,3 +42,12 @@
 @media print{.site-navigation{display:none!important}}
 
 .schedule-premium-switch{display:flex;gap:8px;flex-wrap:wrap;margin:0 28px 18px}.schedule-premium-switch button{font:600 12px Sarabun,sans-serif;border:1px solid #dfbdce;border-radius:9px;padding:12px 15px;background:#fff;color:#9c3261;cursor:pointer}.schedule-premium-switch button[aria-pressed=true]{background:#a13362;border-color:#a13362;color:#fff}.schedule-premium-switch button:focus-visible{outline:3px solid #f2a7ca;outline-offset:2px}@media(max-width:760px){.schedule-premium-switch{margin:0 16px 16px}}@media print{.schedule-premium-switch{display:none!important}}
+
+/* Shared return-to-top control for all planners. */
+.back-to-top{position:fixed;right:max(20px,env(safe-area-inset-right));bottom:calc(20px + env(safe-area-inset-bottom));z-index:30;display:inline-flex;align-items:center;justify-content:center;gap:6px;min-width:68px;min-height:46px;padding:10px 14px;border:1px solid #a13362;border-radius:24px;background:#a13362;color:#fff;font-family:inherit;font-weight:600;font-size:13px;line-height:1.4;box-shadow:0 4px 16px #6a25452b;cursor:pointer}
+.back-to-top[hidden]{display:none}
+.back-to-top span{font-size:20px;line-height:1}
+.back-to-top:hover{background:#86264e}
+.back-to-top:focus-visible{outline:3px solid #dca7bf;outline-offset:3px}
+@media(max-width:600px){.back-to-top{right:14px;bottom:calc(14px + env(safe-area-inset-bottom));min-width:64px;padding:9px 12px}}
+@media print{.back-to-top{display:none!important}}

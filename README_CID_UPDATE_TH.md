@@ -1,7 +1,8 @@
-# TYINSURE update 2026-11-07
-Full source commit: a99c50239f4c4b23fcf2842c244b07d5c8ed286e
-Target: tyinsure/tydemo main. User authorized upload AND deployment.
-Changes since prior source 9c4fee7: shared PDF A4 footer/disclaimer and contact placement across all reports; senior age heading; phone-only Health annual schedule with age/total expandable details; selected-only separate OPD/daily/CI premium rows in Health comparison.
-Preserve all existing plan calculations, other project files, GitHub history, .github workflows, Pages settings and unrelated hosting configuration. Do not force-push. Website lives in dist; use existing manual Pages workflow to deploy updated main and verify deployed source.
-No .openai, credentials, temporary runtime, or .git included. Verify CID_UPDATE_MANIFEST.json before import.
-Validation: 52-suite project runner; comparison tests cover selected-only rows across all 8 rider combinations and all 4 frequencies. UI verified selected/unselected rows and OPD type labels. PDF audit: 143 scenarios/415 pages, 18 rendered sample PDFs/58 pages reviewed. Mobile age totals match original schedule; iPad keeps table.
+# TYINSURE Top button update 2026-11-07
+Source: 441a2379bf4d8e987a7392659ad7b8c62fbdf209
+User authorizes GitHub upload AND deployment to tyinsure/tydemo.
+Full source including all previous PDF/mobile Health/selected-rider changes.
+Only new changes since source a99c502: dist/back-to-top.mjs; dist/style.css; script inclusion in index.html, insure_retire.html, legacy.html, health.html and savings.html.
+Top button appears after 400px scrolling, returns to top smoothly, honors reduced motion, supports keyboard and phone safe area, hidden in print. Calculators and report generation unchanged.
+Validated in browser on all five pages; mobile 390px; keyboard Enter; hidden at top, visible after scroll and returns to zero; no console errors. Syntax, diff whitespace, 180 local asset references and duplicate IDs checked.
+Preserve Git history, workflows, hosting settings and unrelated remote files. Do not force-push. Verify manifest. Use existing manual Pages workflow to deploy updated main and verify Top on live pages.
