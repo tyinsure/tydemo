@@ -26,3 +26,37 @@ body.has-daily-rider .table-scroll table{min-width:1220px}body.has-daily-rider.h
 .health-comparison{margin-top:24px;overflow:hidden;min-width:0}.comparison-header{padding:24px 28px 18px}.comparison-header h2{font-size:22px;margin:0 0 8px}.comparison-header p:last-child{font-size:12px;color:#877b87;line-height:1.8;margin:0}.comparison-scroll{overflow-x:auto;overscroll-behavior-x:contain}.comparison-scroll:focus-visible{outline:3px solid #e3b5c9;outline-offset:-3px}.health-comparison-table{table-layout:fixed;min-width:1080px;white-space:normal;border-collapse:collapse;width:100%;font-size:11px}.health-comparison-table caption{text-align:left;padding:10px 28px;background:#fff8ed;color:#8b7153;font-size:12px}.health-comparison-table th,.health-comparison-table td{padding:10px 12px;line-height:1.7;border:1px solid #eadde4;vertical-align:middle;text-align:center;position:static;color:#5f4d5b;overflow-wrap:anywhere}.health-comparison-table th:first-child{width:230px;text-align:left;padding-left:20px}.health-comparison-table thead th{background:#f8edf2;color:#9e315e;font-weight:600}.health-comparison-table thead th span{display:block;font-size:11px;color:#9c7b8a;margin-bottom:5px}.health-comparison-table thead strong{font-size:12px}.health-comparison-table tbody th{background:#fff;font-size:11px;font-weight:500}.health-comparison-table tbody tr:nth-child(even) td{background:#fdfafb}.health-comparison-table .comparison-sum th,.health-comparison-table .comparison-sum td{background:#fff3d9;font-weight:600}.health-comparison-table .comparison-renewal th,.health-comparison-table .comparison-renewal td{background:#eef5eb;font-size:10px}.health-comparison-table .comparison-price th,.health-comparison-table .comparison-price td{background:#fffafc}.health-comparison-table .comparison-total th,.health-comparison-table .comparison-total td{background:#a13362;color:white;font-weight:700;font-size:13px}.health-comparison-table .comparison-status th,.health-comparison-table .comparison-status td{font-size:10px;background:#faf6f8}.comparison-note{font-size:11px;color:#877b87;line-height:1.9;padding:16px 28px;margin:0}.health-comparison-table tfoot td{font-variant-numeric:tabular-nums}@media(max-width:760px){.comparison-header{padding:22px 18px 16px}.comparison-header h2{font-size:20px}.comparison-note{padding:14px 18px}.health-comparison-table th:first-child{position:sticky;left:0;z-index:1;background:#fff;width:190px}.health-comparison-table .comparison-total th:first-child{background:#a13362}.health-comparison-table .comparison-sum th:first-child{background:#fff3d9}.health-comparison-table thead th:first-child{background:#f8edf2}.health-comparison-table{min-width:1040px}}@media print{.health-comparison{break-inside:auto}.comparison-scroll{overflow:visible}.health-comparison-table{min-width:0;font-size:7px}.health-comparison-table th:first-child{width:20%;position:static}.health-comparison-table th,.health-comparison-table td{padding:4px!important;font-size:7px!important}.health-comparison-table thead strong{font-size:8px}}
 
 .health-comparison-table .comparison-limit td{font-weight:600;color:#4b3546}
+
+/* Compact annual schedule for portrait phones; the full table stays available on larger screens and print. */
+.health-mobile-schedule{display:none}
+@media screen and (max-width:600px){
+ .health-schedule-desktop{display:none}
+ .health-mobile-schedule{display:block;border-top:1px solid #eadce5;background:#fff;min-width:0}
+ .mobile-age-heading{display:flex;justify-content:space-between;gap:14px;padding:14px 20px;background:#f8edf3;color:#94325d;font-weight:600;font-size:12px}
+ .mobile-age-help{margin:0;padding:10px 20px;color:#9d8594;font-size:10px;line-height:1.7}
+ .mobile-age-list{max-height:570px;overflow:auto;overscroll-behavior-y:contain;scrollbar-width:thin;scrollbar-color:#d5b5c5 #faf6f9}
+ .mobile-age-row{border-bottom:1px solid #eee1e8;margin:0;background:#fff}
+ .mobile-age-row:nth-child(even){background:#fcf9fb}
+ .mobile-age-row summary{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr) 16px;column-gap:10px;align-items:center;list-style:none;cursor:pointer;min-height:76px;padding:13px 18px}
+ .mobile-age-row summary::-webkit-details-marker{display:none}
+ .mobile-age-label strong{display:block;font-size:16px;color:#36283b}
+ .mobile-age-label small{display:block;margin-top:3px;font-size:10px;line-height:1.6;color:#9c8795;white-space:normal}
+ .mobile-age-total{text-align:right;min-width:0}
+ .mobile-age-total strong{display:block;font-size:15px;line-height:1.5;color:#9f3261;overflow-wrap:anywhere;font-variant-numeric:tabular-nums}
+ .mobile-age-total small{display:block;font-size:10px;color:#a08b98;margin-top:2px}
+ .mobile-age-toggle{color:#a13362;text-align:center;font-size:21px;line-height:1}
+ .mobile-age-toggle:before{content:'+'}
+ .mobile-age-row[open] .mobile-age-toggle:before{content:'−'}
+ .mobile-age-action{grid-column:1/-1;font-size:10px;color:#a13362;margin-top:6px}
+ .mobile-age-row[open] .mobile-age-action{display:none}
+ .mobile-age-row[open] summary,.mobile-age-milestone summary{background:#fff1f7}
+ .mobile-age-row summary:focus-visible{outline:2px solid #b64070;outline-offset:-3px}
+ .mobile-age-row dl{margin:0;padding:0 18px 12px;background:#fff}
+ .mobile-age-row dl>div{display:grid;grid-template-columns:minmax(0,1.4fr) minmax(0,1fr);gap:12px;padding:11px 0;border-bottom:1px solid #f2eaf0;align-items:start}
+ .mobile-age-row dt{margin:0;font-size:12px;line-height:1.65;color:#725569;white-space:normal}
+ .mobile-age-row dt small{display:block;font-size:9px;color:#aa93a0}
+ .mobile-age-row dd{margin:0;text-align:right;font-size:13px;line-height:1.65;font-weight:500;color:#50384a;overflow-wrap:anywhere;font-variant-numeric:tabular-nums}
+ .mobile-age-row .mobile-age-detail-total{background:#f9edf3;margin:0 -8px;padding:11px 8px;border-radius:8px;border-bottom:0}
+ .mobile-age-row .mobile-age-detail-total dt,.mobile-age-row .mobile-age-detail-total dd{font-weight:600;color:#a13362}
+}
+@media print{.health-mobile-schedule{display:none!important}.health-schedule-desktop{display:block!important}}

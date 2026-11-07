@@ -22,10 +22,11 @@ export function healthComparison(data,healthData,input,{respectDeduct=true,inclu
   try{
    const result=addHealthRider(main,healthData,quoteInput);validateMainRiders(result);
    const other=round((result.opd?.premium??0)+(result.daily?.premium??0)+(result.ci?.premium??0));
-   return {...plan,result,prices:{main:result.premium,health:result.health.premium,care:result.care?.premium??0,pa:result.rider?.premium??0,other,total:result.combinedFirstYearPremium,annual:result.combinedFirstYearAnnual}};
+   return {...plan,result,prices:{main:result.premium,health:result.health.premium,care:result.care?.premium??0,opd:result.opd?.premium??0,daily:result.daily?.premium??0,ci:result.ci?.premium??0,pa:result.rider?.premium??0,other,total:result.combinedFirstYearPremium,annual:result.combinedFirstYearAnnual}};
   }catch(error){return {...plan,error:error.message};}
  });
- return {main,columns,includeOtherRiders,respectDeduct};
+ const selectedRiderRows=includeOtherRiders?[...(input.opdType?[['opd',input.opdType==='per-visit'?'เบี้ย OPD ต่อครั้ง':'เบี้ย OPD เหมาจ่าย']]:[]),...(input.dailyEnabled?[['daily','เบี้ยค่าชดเชยรายวัน']]:[]),...(input.ciEnabled?[['ci','เบี้ยซีไอ เพอร์เฟค แคร์']]:[])]:[];
+ return {main,columns,includeOtherRiders,respectDeduct,selectedRiderRows};
 }
 function coverage(plan){
  return plan.healthProduct==='elite'?eliteBenefits(1):plan.healthProduct==='dhealth'?dhealthBenefits(plan.benefit):extraBenefits(3);
@@ -62,6 +63,6 @@ export function comparisonCoverageRows(comparison){
 export function healthComparisonTable(comparison){
  const esc=s=>String(s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
  const cols=comparison.columns,unit={annual:'ปี',semiannual:'6เดือน',quarterly:'3เดือน',monthly:'เดือน'}[comparison.main.frequency.id];
- const priceRows=[['main','เบี้ยสัญญาหลัก'],['health','เบี้ยประกันสุขภาพ'],['care','เบี้ย Care Plus'],['pa','เบี้ย PA ที่เลือก'],...(comparison.includeOtherRiders?[['other','เบี้ย OPD / ชดเชย / CI ที่เลือก']]:[]),['total','เบี้ยรวม'+comparison.main.frequency.label+' (บาท/'+unit+')']];
+ const priceRows=[['main','เบี้ยสัญญาหลัก'],['health','เบี้ยประกันสุขภาพ'],['care','เบี้ย Care Plus'],['pa','เบี้ย PA ที่เลือก'],...comparison.selectedRiderRows,['total','เบี้ยรวม'+comparison.main.frequency.label+' (บาท/'+unit+')']];
  return '<table class="health-comparison-table"><caption>เปรียบเทียบความคุ้มครองและเบี้ย'+esc(comparison.main.frequency.label)+'</caption><thead><tr><th scope="col">ความคุ้มครอง</th>'+cols.map(p=>'<th scope="col"><span>'+p.name+'</span><strong>'+esc(p.label)+'</strong></th>').join('')+'</tr></thead><tbody>'+comparisonCoverageRows(comparison).map(row=>'<tr'+(row.kind?' class="comparison-'+row.kind+'"':'')+'><th scope="row">'+esc(row.label)+'</th>'+row.values.map(v=>'<td>'+esc(v).replaceAll('\n','<br>')+'</td>').join('')+'</tr>').join('')+'</tbody><tfoot>'+priceRows.map(([key,label])=>'<tr class="'+(key==='total'?'comparison-total':'comparison-price')+'"><th scope="row">'+esc(label)+'</th>'+cols.map(p=>'<td>'+(!p.prices?'—':money(p.prices[key]))+'</td>').join('')+'</tr>').join('')+'<tr class="comparison-status"><th scope="row">เงื่อนไขการคำนวณ</th>'+cols.map(p=>'<td>'+esc(p.error??'คำนวณตามข้อมูลที่เลือก')+'</td>').join('')+'</tr></tfoot></table>';
 }

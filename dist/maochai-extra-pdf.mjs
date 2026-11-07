@@ -1,4 +1,4 @@
-import {drawPDFDisclaimer} from './pdf-contact-link.mjs';
+import {drawPDFFooter} from './pdf-contact-link.mjs';
 import {LINE_CONTACT_TEXT} from './pdf-contact-link.mjs';
 import {extraBenefits,EXTRA_TERMS} from './maochai-extra.mjs';
 const W=595.28,H=841.89,M=28,COL=430;
@@ -25,7 +25,7 @@ export function drawMaochaiExtra(canvas,r,index,total,scale){
  y+=15;text('เงื่อนไขการรับประกัน',M,y,9,'#A13362',true);y+=13;
  for(const note of EXTRA_TERMS){for(const s of wrap(note,W-2*M,7.8)){text(s,M,y,7.8);y+=10;}y+=3;}
  if(y>790)throw Error('สรุปเหมาจ่าย Extra เกินพื้นที่ A4');
- text('สรุปเพื่อประกอบการพิจารณา รายละเอียดเป็นไปตามเงื่อนไขสัญญา',M,800,7.3,'#766775');
- text(LINE_CONTACT_TEXT,M,819,8,'#338169');text(`หน้า ${index+1} / ${total}`,W-95,819,8,'#877b87');
- drawPDFDisclaimer(canvas.getContext('2d'));return canvas;
+ text('สรุปเพื่อประกอบการพิจารณา รายละเอียดเป็นไปตามเงื่อนไขสัญญา',M,792,7.3,'#766775');
+
+ drawPDFFooter(canvas.getContext('2d'),index,total);return canvas;
 }

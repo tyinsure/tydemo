@@ -1,4 +1,4 @@
-import {drawPDFDisclaimer} from './pdf-contact-link.mjs';
+import {drawPDFFooter} from './pdf-contact-link.mjs';
 import {LINE_CONTACT_TEXT} from './pdf-contact-link.mjs';
 const W=595.28,H=841.89,M=28,COL=411;
 export function dhealthBenefits(benefit){
@@ -53,7 +53,7 @@ export function drawDHealthBenefits(canvas,r,index,total,scale){
  for(const [period,conditions] of DHEALTH_WAITING){text(period,M,y,8.3,'#A13362',true);y=paragraph(conditions,M+54,y,W-2*M-54,8.1,11.5)+3;}
  y=paragraph('นับจากวันเริ่มมีผลคุ้มครองตามสัญญาเพิ่มเติม หรือการต่ออายุครั้งสุดท้าย แล้วแต่กรณีใดเกิดขึ้นภายหลัง · กลุ่มโรค 120 วัน รวมทั้งโรคแทรกซ้อน',M,y+2,W-2*M,7.6,11);
  if(y>799)throw Error('สรุป D Health Lite เกินพื้นที่ A4');
- text('สรุปเพื่อประกอบการพิจารณา รายละเอียดเป็นไปตามเงื่อนไขสัญญาเพิ่มเติม',M,799,7.5,'#766775');
- text(LINE_CONTACT_TEXT,M,819,8,'#338169');text(`หน้า ${index+1} / ${total}`,W-95,819,8,'#877b87');
- drawPDFDisclaimer(canvas.getContext('2d'));return canvas;
+ text('สรุปเพื่อประกอบการพิจารณา รายละเอียดเป็นไปตามเงื่อนไขสัญญาเพิ่มเติม',M,792,7.5,'#766775');
+
+ drawPDFFooter(canvas.getContext('2d'),index,total);return canvas;
 }

@@ -1,4 +1,4 @@
-import {drawPDFDisclaimer} from './pdf-contact-link.mjs';
+import {drawPDFFooter} from './pdf-contact-link.mjs';
 import {LINE_CONTACT_TEXT} from './pdf-contact-link.mjs';
 import {dhealthBenefits,DHEALTH_WAITING} from './dhealth-pdf-summary.mjs';
 const W=595.28,H=841.89,M=28,WIDTH=W-2*M;
@@ -57,7 +57,7 @@ function painter(canvas,scale){
  function table(rows,y,col=397){for(const [i,[title,amount,note='']] of rows.entries()){const a=wrap(title,col-M-14,8.5),b=wrap(note,col-M-14,7.7),v=wrap(amount,W-M-col-14,8.1),height=Math.max(23,a.length*11.5+b.length*10+8,v.length*11.5+8);c.fillStyle=i%2?'#FFF':'#F9F3F6';c.fillRect(M,y,WIDTH,height);let ty=y+12;for(const s of a){text(s,M+7,ty,8.5);ty+=11.5;}for(const s of b){text(s,M+7,ty,7.7,'#766775');ty+=10;}v.forEach((s,j)=>text(s,col+7,y+12+j*11.5,8.1));y+=height;c.fillStyle='#DDD4DA';c.fillRect(M,y-.5,WIDTH,.5);}return y;}
  function header(title,detail){text('TYINSURE',M,37,18,'#A13362',true);text(title,M,64,14,'#A13362',true);return para(detail,M,84,WIDTH,9,13)+9;}
  function band(title,y){c.fillStyle='#A13362';c.fillRect(M,y,WIDTH,22);text(title,M+7,y+15,9,'#FFF',true);return y+22;}
- function footer(y,index,total){if(y>790)throw Error('สรุปความคุ้มครองเกินพื้นที่ A4');text('สรุปเพื่อประกอบการพิจารณา รายละเอียดเป็นไปตามเงื่อนไขสัญญาเพิ่มเติม',M,799,7.5,'#766775');text(LINE_CONTACT_TEXT,M,819,8,'#338169');text(`หน้า ${index+1} / ${total}`,W-95,819,8,'#877b87');}
+ function footer(y,index,total){if(y>790)throw Error('สรุปความคุ้มครองเกินพื้นที่ A4');text('สรุปเพื่อประกอบการพิจารณา รายละเอียดเป็นไปตามเงื่อนไขสัญญาเพิ่มเติม',M,792,7.5,'#766775');}
  return {c,text,wrap,para,table,header,band,footer};
 }
 export function drawExtraHealthSummary(canvas,r,kind,index,total,scale=3){
@@ -95,5 +95,5 @@ export function drawExtraHealthSummary(canvas,r,kind,index,total,scale=3){
    });
   }
  }
- p.footer(y,index,total);drawPDFDisclaimer(canvas.getContext('2d'));return canvas;
+ p.footer(y,index,total);drawPDFFooter(canvas.getContext('2d'),index,total);return canvas;
 }

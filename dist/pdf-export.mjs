@@ -1,4 +1,4 @@
-import {drawPDFDisclaimer} from './pdf-contact-link.mjs';
+import {drawPDFFooter} from './pdf-contact-link.mjs';
 import {elapsedYearLabel} from './elapsed-year.mjs';
 import {scheduleUnit} from './schedule-premium-view.mjs';
 import {schedulePremiumValues} from './legacy-schedule-view.mjs';
@@ -61,12 +61,12 @@ export function drawPDFPage(canvas,r,mode,layout,index,total,scale=3){
  const bottom=layout.top+36+layout.rows.length*ROW;x=M;
  for(const width of [...widths,0]){line(x,layout.top,x,bottom);x+=width;}
  line(M,759,W-M,759,'#A13362');
- text(r.plan.family==='mt8560'?'* ก่อนบำนาญ: 100% ของทุนถึงอายุ 44 ปี อายุ 45–59 ปีเพิ่มเป็น 110–250%':fixedLegacy?'* ประกันชีวิตขั้นต่ำ = ค่าสูงกว่าระหว่างทุน 100% และเบี้ยสะสม 101% ยังไม่รวมมูลค่าเวนคืน':legacy?'* ความคุ้มครองขั้นต่ำ = ค่าสูงกว่าระหว่างทุนและเบี้ยสะสม ยังไม่รวมมูลค่าเวนคืน':'* ก่อนรับบำนาญ: ความคุ้มครองขั้นต่ำ 105% ของเบี้ยประกันที่ชำระสะสม',M,774,{size:8});
- text(r.plan.family==='mt8560'?'อายุ 60–73 ปี: มูลค่าปัจจุบันตามตาราง × ทุน ÷ 1,000 · อายุ 74–85 ปี: -':cumulative?'เบี้ยประกันหลักสะสมรวมทุกงวดตั้งแต่ปีแรกถึงปีนั้น เฉพาะสัญญาหลัก ไม่รวม PA (บาท)':wealth?`ชำระ ${r.payYears} ปี (ปีที่ 0–${r.payYears-1}) · ครบอายุ 99 ปี รับค่าสูงกว่าระหว่างทุน 100% และเบี้ยที่ชำระแล้ว 101%`:premier?'ชำระครั้งเดียวปีที่ 0 · ครบอายุ 99 ปี รับค่าสูงกว่าระหว่างทุน 100% และเบี้ยที่ชำระแล้ว 101%':legacy?'อายุ ณ ต้นปี เบี้ยสะสมคิดหลังชำระครบทุกงวดของปีนั้น แถวสุดท้ายครบอายุ 99 ปี':'หลังเริ่มรับบำนาญ: เบี้ยสะสมหักเงินบำนาญสะสมที่ได้รับแล้ว (ไม่ต่ำกว่า 0 บาท)',M,788,{size:8});
- if(withRider)text(scheduleDisplay==='modal'?'ตารางเบี้ยต่องวดตามโหมดชำระ กลุ่มอาชีพ 1 การต่ออายุขึ้นกับเงื่อนไข ไม่มีอัตราไม่ใช่เบี้ยฟรี':'ตาราง PA รวมทุกงวดต่อปีตามอายุ กลุ่มอาชีพ 1 การต่ออายุขึ้นกับเงื่อนไข ไม่มีอัตราไม่ใช่เบี้ยฟรี',M,800,{size:7.5,maxWidth:W-2*M});
- text(LINE_CONTACT_TEXT,M,withRider?819:809,{size:8,color:'#338169'});
- text(`หน้า ${index+1} / ${total}`,W-M,withRider?819:809,{size:8,color:'#877b87',align:'right'});
- drawPDFDisclaimer(canvas.getContext('2d'));return canvas;
+ text(r.plan.family==='mt8560'?'* ก่อนบำนาญ: 100% ของทุนถึงอายุ 44 ปี อายุ 45–59 ปีเพิ่มเป็น 110–250%':fixedLegacy?'* ประกันชีวิตขั้นต่ำ = ค่าสูงกว่าระหว่างทุน 100% และเบี้ยสะสม 101% ยังไม่รวมมูลค่าเวนคืน':legacy?'* ความคุ้มครองขั้นต่ำ = ค่าสูงกว่าระหว่างทุนและเบี้ยสะสม ยังไม่รวมมูลค่าเวนคืน':'* ก่อนรับบำนาญ: ความคุ้มครองขั้นต่ำ 105% ของเบี้ยประกันที่ชำระสะสม',M,772,{size:8});
+ text(r.plan.family==='mt8560'?'อายุ 60–73 ปี: มูลค่าปัจจุบันตามตาราง × ทุน ÷ 1,000 · อายุ 74–85 ปี: -':cumulative?'เบี้ยประกันหลักสะสมรวมทุกงวดตั้งแต่ปีแรกถึงปีนั้น เฉพาะสัญญาหลัก ไม่รวม PA (บาท)':wealth?`ชำระ ${r.payYears} ปี (ปีที่ 0–${r.payYears-1}) · ครบอายุ 99 ปี รับค่าสูงกว่าระหว่างทุน 100% และเบี้ยที่ชำระแล้ว 101%`:premier?'ชำระครั้งเดียวปีที่ 0 · ครบอายุ 99 ปี รับค่าสูงกว่าระหว่างทุน 100% และเบี้ยที่ชำระแล้ว 101%':legacy?'อายุ ณ ต้นปี เบี้ยสะสมคิดหลังชำระครบทุกงวดของปีนั้น แถวสุดท้ายครบอายุ 99 ปี':'หลังเริ่มรับบำนาญ: เบี้ยสะสมหักเงินบำนาญสะสมที่ได้รับแล้ว (ไม่ต่ำกว่า 0 บาท)',M,784,{size:8});
+ if(withRider)text(scheduleDisplay==='modal'?'ตารางเบี้ยต่องวดตามโหมดชำระ กลุ่มอาชีพ 1 การต่ออายุขึ้นกับเงื่อนไข ไม่มีอัตราไม่ใช่เบี้ยฟรี':'ตาราง PA รวมทุกงวดต่อปีตามอายุ กลุ่มอาชีพ 1 การต่ออายุขึ้นกับเงื่อนไข ไม่มีอัตราไม่ใช่เบี้ยฟรี',M,796,{size:7.5,maxWidth:W-2*M});
+
+
+ drawPDFFooter(canvas.getContext('2d'),index,total);return canvas;
 }
 export async function createPDFReport(r,mode,{createCanvas=()=>document.createElement('canvas'),loadFont=()=>document.fonts.load('11px Sarabun','สรุปแผนบำนาญ')}={}){
  const [{PDFDocument,PDFString}]=await Promise.all([import('./assets/pdf-lib.min.mjs'),loadFont()]);

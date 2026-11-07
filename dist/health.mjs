@@ -1,3 +1,4 @@
+import {healthMobileSchedule} from './health-mobile-schedule.mjs';
 import {elapsedYearLabel} from './elapsed-year.mjs';
 import {healthComparison,healthComparisonTable} from './health-comparison.mjs';
 import {EXTRA_PLANS,EXTRA_TERMS,extraBenefits} from './maochai-extra.mjs';
@@ -18,6 +19,8 @@ import {premiumPaymentViews,premiumPaymentTable} from './premium-payment-views.m
 const $=id=>document.getElementById(id),money=n=>n.toLocaleString('th-TH',{minimumFractionDigits:2,maximumFractionDigits:2});
 const originalHealthTiming=$('health-table-note').textContent,originalScheduleFooter=$('schedule-footer-note').textContent;
 let healthData,data,mode='sum',result=null,dailyBenefit=500,premiumView='selected',scheduleDisplay='annual',convertible=false;
+const openScheduleAges=new Set();
+$('health-mobile-schedule').addEventListener('toggle',event=>{const target=event.target;if(target?.tagName!=='DETAILS')return;const age=Number(target.dataset.scheduleAge);if(!Number.isFinite(age))return;if(target.open)openScheduleAges.add(age);else openScheduleAges.delete(age);},true);
 function updatePremiumView(r){
  const all=premiumView==='all';
  const unit={annual:'ปี',semiannual:'6เดือน',quarterly:'3เดือน',monthly:'เดือน'}[r.frequency.id];
@@ -177,7 +180,7 @@ function render(){
   $('premium-cost').hidden=true;$('premium-all-view').replaceChildren();result=null;$('error').hidden=false;$('error').textContent=e.message;$('legacy-results').classList.add('invalid');
   for(const id of ['headline-value','complement-value','initial-coverage','total-paid','maturity-value','pa-base-annual','pa-annual','pa-combined','health-premium','health-annual','health-selection','opd-premium','opd-annual','opd-selection','care-selection','care-premium','care-annual','ci-selection','ci-premium','ci-annual','daily-selection','daily-premium','daily-annual'])$(id).textContent='—';
   $('ci-benefits').replaceChildren();
-  $('rate-detail').textContent='';$('calculation-note').textContent='กรอกข้อมูลให้ถูกต้องเพื่อดูผลคำนวณ';$('schedule-body').replaceChildren();$('row-count').textContent='ยังไม่มีข้อมูล';$('schedule-description').textContent='';
+  $('rate-detail').textContent='';$('calculation-note').textContent='กรอกข้อมูลให้ถูกต้องเพื่อดูผลคำนวณ';$('schedule-body').replaceChildren();$('health-mobile-schedule').replaceChildren();openScheduleAges.clear();$('row-count').textContent='ยังไม่มีข้อมูล';$('schedule-description').textContent='';
   for(const id of ['excel','pdf','print'])$(id).disabled=true;summary.update();
  }
 }
@@ -191,6 +194,7 @@ function renderSchedule(r){
  $('schedule-footer-note').textContent=originalScheduleFooter.replace('รวมทุกงวดเฉพาะปีนั้น',modal?'ต่องวดตามโหมดชำระที่เลือก':'รวมทุกงวดเฉพาะปีนั้น')+(r.health?.convertibleNotes?.length?'\n'+r.health.convertibleNotes.join('\n'):'');
   $('schedule-description').textContent=`${r.gender==='male'?'ชาย':'หญิง'} อายุเริ่ม ${r.age} ปี · ทุน ${money(r.sum)} บาท · ชำระ${r.frequency.label}`;
   $('schedule-body').innerHTML=r.schedule.map(original=>{const row=scheduleViewRow(r,original,scheduleDisplay);return `<tr class="${[1,r.payYears].includes(row.policyYear)||row.age===99?'milestone':''}"><td><span class="age-number">${row.age}</span><span class="phase">${elapsedYearLabel(r,row)} · ${row.policyYear===1?'เริ่มคุ้มครอง':row.age===99?'ครบสัญญา':row.policyYear===r.payYears?'ปีสุดท้ายที่ชำระเบี้ย':'คุ้มครอง'}</span></td><td>${row.pay?money(row.pay):'—'}</td>${r.health?`<td>${row.healthPremium===null?'—':row.healthPremium?money(row.healthPremium):'—'}</td>`:''}${r.opd?`<td>${row.opdPremium===null?'—':row.opdPremium?money(row.opdPremium):'—'}</td>`:''}${r.daily?`<td>${row.dailyPremium?money(row.dailyPremium):'—'}</td>`:''}${r.care?`<td>${row.carePremium===null||!row.carePremium?'—':money(row.carePremium)}</td>`:''}${r.ci?`<td>${row.ciPremium===null?'—':money(row.ciPremium)}</td>`:''}${r.rider?`<td class="rider-premium-value">${row.riderPremium===null?'—':money(row.riderPremium)}</td>`:''}<td class="total-premium-value">${row.totalPremium===null?'—':money(row.totalPremium)}</td><td class="coverage-value">${row.coverage?money(row.coverage):'—'}</td><td class="pension-value">${row.maturity?money(row.maturity):'—'}</td></tr>`;}).join('');
+  $('health-mobile-schedule').innerHTML=healthMobileSchedule(r,scheduleDisplay,openScheduleAges);
   $('row-count').textContent=`อายุ ${r.age}–99 ปี · ${r.schedule.length} แถว`;
 }
 async function download(kind){

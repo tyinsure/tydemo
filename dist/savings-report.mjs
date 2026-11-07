@@ -1,3 +1,4 @@
+import {drawPDFFooter} from './pdf-contact-link.mjs';
 import {savingsDividendLabel} from './savings-calculator.mjs';
 import {elapsedYearLabel} from './elapsed-year.mjs';
 import {zipParts} from './excel-export.mjs';
@@ -78,10 +79,10 @@ export function drawSavingsPDF(canvas,r,options,scale=3){
  data.headers.forEach((h,i)=>{const lines=(i===0?'อายุ':h).split('\n');lines.forEach((s,j)=>text(s,x+widths[i]/2,y+5+j*(lines.length>2?9:12),lines.length>2?7.3:7.8,true,'#fff','center',widths[i]-6));x+=widths[i];});y+=33;
  data.rows.forEach((row,i)=>{c.fillStyle=i===r.rows.length-1?'#f9eaf1':i%2?'#fff':'#fcfafb';c.fillRect(M,y,W-2*M,17);let x=M;row.forEach((value,j)=>{text(value===null?'—':j===0?value:money(value),j===0?x+widths[j]/2:x+widths[j]-4,y+(j===0?1:4),j===0?7:8,i===r.rows.length-1,'#36283b',j===0?'center':'right',widths[j]-8);if(j===0)text(elapsedYearLabel(r,r.rows[i]),x+widths[j]/2,y+9,6,false,'#877b87','center',widths[j]-4);c.strokeStyle='#d9cbd3';c.lineWidth=.4;c.strokeRect(x,y,widths[j],17);x+=widths[j];});y+=17;});
  x=M;for(const w of widths){c.strokeRect(x,top,w,33);x+=w;}
- y+=10;y=wrapped(SAVINGS_DISCLAIMER,M,y,W-2*M,7.5,10)+4;
+ y+=10;
  if(y>795)throw Error('ข้อมูลยาวเกินพื้นที่ PDF กรุณาลดความยาวค่าที่ระบุ');
- text(LINE_CONTACT_TEXT,M,805,8,false,'#338169');text('หน้า 1 / 1',W-M,805,8,false,'#877b87','right');
- return canvas;
+
+ drawPDFFooter(c,0,1);return canvas;
 }
 export async function createSavingsPDF(r,options,{createCanvas=()=>document.createElement('canvas'),loadFont=()=>Promise.all([document.fonts.load('9px Sarabun','แผนออมทรัพย์'),document.fonts.load('bold 9px Sarabun','แผนออมทรัพย์')])}={}){
  const [{PDFDocument,PDFString}]=await Promise.all([import('./assets/pdf-lib.min.mjs'),loadFont()]);

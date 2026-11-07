@@ -18,6 +18,20 @@ for(const age of [11,32,55,65])for(const gender of ['male','female'])for(const f
  }
  const html=healthComparisonTable(c);assert.ok(!html.includes('NaN'));assert.ok(html.includes('บาท/'+{annual:'ปี',semiannual:'6เดือน',quarterly:'3เดือน',monthly:'เดือน'}[frequency]));assert.ok(html.includes('8,000 บาท/วัน'));cases++;
 }
+// Each optional rider gets its own selected-only row, with mode-specific premiums.
+for(const frequency of ['annual','semiannual','quarterly','monthly'])for(let mask=0;mask<8;mask++){
+ const c=healthComparison(data,rates,{...base,frequency,opdType:mask&1?'lump':'',opdBenefit:15000,dailyEnabled:!!(mask&2),dailyBenefit:500,ciEnabled:!!(mask&4),ciSum:500000});
+ const html=healthComparisonTable(c);
+ assert.equal(c.selectedRiderRows.length,Number(!!(mask&1))+Number(!!(mask&2))+Number(!!(mask&4)));
+ for(const [key,bit,label] of [['opd',1,'เบี้ย OPD เหมาจ่าย'],['daily',2,'เบี้ยค่าชดเชยรายวัน'],['ci',4,'เบี้ยซีไอ เพอร์เฟค แคร์']]){
+  assert.equal(html.includes('<th scope="row">'+label+'</th>'),!!(mask&bit));
+  for(const p of c.columns)assert.equal(p.prices[key],p.result[key]?.premium??0);
+ }
+ assert.ok(!html.includes('เบี้ย OPD / ชดเชย / CI ที่เลือก'));
+}
+const excluded=healthComparison(data,rates,{...base,opdType:'lump',opdBenefit:15000,dailyEnabled:true,dailyBenefit:500,ciEnabled:true,ciSum:500000},{includeOtherRiders:false});
+assert.deepEqual(excluded.selectedRiderRows,[]);
+assert.ok(excluded.columns.every(p=>p.prices.other===0));
 for(const [benefit,types] of [[1000000,[['none','ded0'],['deductible','ded20000'],['deductible','ded50000'],['copay','copay10'],['copay','copay20']]],[5000000,[['none','ded0'],['deductible','ded30000'],['deductible','ded50000'],['deductible','ded100000'],['copay','copay10'],['copay','copay20']]]])for(const [type,option] of types){
  const i={...base,healthBenefit:benefit,healthType:type,healthOption:option},c=healthComparison(data,rates,i);
  for(const col of c.columns.filter(p=>p.healthProduct==='dhealth')){assert.equal(col.error,undefined);assert.equal(col.result.health.benefit,benefit);assert.ok(col.label.includes(benefit/1000000+'ล้าน'));assert.equal(col.result.health.deductibleOption,option);}

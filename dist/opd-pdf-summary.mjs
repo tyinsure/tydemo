@@ -1,4 +1,4 @@
-import {drawPDFDisclaimer} from './pdf-contact-link.mjs';
+import {drawPDFFooter} from './pdf-contact-link.mjs';
 import {LINE_CONTACT_TEXT} from './pdf-contact-link.mjs';
 export function drawOPDBenefits(canvas,r,index,total,scale=3){
  const W=595.28,H=841.89,M=28;canvas.width=Math.ceil(W*scale);canvas.height=Math.ceil(H*scale);
@@ -20,6 +20,6 @@ export function drawOPDBenefits(canvas,r,index,total,scale=3){
  y=Math.max(y,305);text(r.opd.product==='per-visit'?'เงื่อนไขความคุ้มครอง':'ระยะไม่คุ้มครองและเงื่อนไข',M,y,11,'#a13362',true);y+=25;
  for(const term of terms.slice(1))paragraph(term,9.5,9);
  if(y>756)throw Error('ข้อความ OPD เกินพื้นที่ A4');
- text(LINE_CONTACT_TEXT,M,819,8,'#338169');text(`หน้า ${index+1} / ${total}`,510,819,8,'#877b87');
- drawPDFDisclaimer(canvas.getContext('2d'));return canvas;
+
+ drawPDFFooter(canvas.getContext('2d'),index,total);return canvas;
 }

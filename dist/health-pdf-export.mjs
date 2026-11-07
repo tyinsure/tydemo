@@ -1,4 +1,4 @@
-import {drawPDFDisclaimer} from './pdf-contact-link.mjs';
+import {drawPDFFooter} from './pdf-contact-link.mjs';
 import {elapsedYearLabel} from './elapsed-year.mjs';
 import {drawMaochaiExtra} from './maochai-extra-pdf.mjs';
 import {drawConvertibleSummary} from './convertible-pdf-summary.mjs';
@@ -44,8 +44,8 @@ function drawCIBenefits(canvas,r,index,total,scale){
   if(line)lines.push(line);
   lines.forEach((line,j)=>text(line,M,507+i*52+j*16,10));
  });
- text(LINE_CONTACT_TEXT,M,819,8,'#338169');text(`หน้า ${index+1} / ${total}`,W-95,819,8,'#877b87',70);
- drawPDFDisclaimer(canvas.getContext('2d'));return canvas;
+
+ drawPDFFooter(canvas.getContext('2d'),index,total);return canvas;
 }
 function drawDailyBenefits(canvas,r,index,total,scale){
  canvas.width=Math.ceil(W*scale);canvas.height=Math.ceil(H*scale);
@@ -62,8 +62,8 @@ function drawDailyBenefits(canvas,r,index,total,scale){
   for(const ch of note){if(c.measureText(line+ch).width>W-2*M-14){text(line,M,y,10);y+=17;line=ch;}else line+=ch;}
   if(line){text(line,M,y,10);y+=17;}y+=12;
  }
- text(LINE_CONTACT_TEXT,M,819,8,'#338169');text(`หน้า ${index+1} / ${total}`,W-95,819,8,'#877b87',70);
- drawPDFDisclaimer(canvas.getContext('2d'));return canvas;
+
+ drawPDFFooter(canvas.getContext('2d'),index,total);return canvas;
 }
 export function drawPDFPage(canvas,r,mode,layout,index,total,scale=3){
  if(['elite','elite-extra','care'].includes(layout.kind))return drawExtraHealthSummary(canvas,r,layout.kind,index,total,scale);
@@ -116,12 +116,12 @@ export function drawPDFPage(canvas,r,mode,layout,index,total,scale=3){
  const bottom=layout.top+36+layout.rows.length*ROW;x=M;
  for(const width of [...widths,0]){line(x,layout.top,x,bottom);x+=width;}
  line(M,759,W-M,759,'#A13362');
- text(r.plan.family==='mt8560'?'* ก่อนบำนาญ: 100% ของทุนถึงอายุ 44 ปี อายุ 45–59 ปีเพิ่มเป็น 110–250%':legacy?(r.plan.family==='wholelife50000'?'* ประกันชีวิต 100% ของทุน = 50,000 บาท ตามภาพผลประโยชน์ที่แนบ':r.plan.family==='smart9999'?'* ประกันชีวิต = ค่าสูงกว่าระหว่างทุนกับ 101% ของเบี้ยสะสม ยังไม่รวมมูลค่าเวนคืน':'* ความคุ้มครองขั้นต่ำ = ค่าสูงกว่าระหว่างทุนและเบี้ยสะสม ยังไม่รวมมูลค่าเวนคืน'):'* ก่อนรับบำนาญ: ความคุ้มครองขั้นต่ำ 105% ของเบี้ยประกันที่ชำระสะสม',M,774,{size:8});
- text(r.plan.family==='mt8560'?'อายุ 60–73 ปี: มูลค่าปัจจุบันตามตาราง × ทุน ÷ 1,000 · อายุ 74–85 ปี: -':legacy?(r.plan.family==='wholelife50000'?'ครบสัญญาอายุ 99 ปี 100% ของทุน = 50,000 บาท · เบี้ยรวมเฉพาะปีนั้น':r.plan.family==='smart9999'?'ครบสัญญา: ค่าสูงกว่าระหว่างทุนกับ 101% ของเบี้ยที่ชำระทั้งหมด · เบี้ยรวมเฉพาะปีนั้น':'เบี้ยประกันรวม: เบี้ยหลักและสัญญาเพิ่มเติมเฉพาะปีนั้น ไม่สะสมข้ามปี'):'หลังเริ่มรับบำนาญ: เบี้ยสะสมหักเงินบำนาญสะสมที่ได้รับแล้ว (ไม่ต่ำกว่า 0 บาท)',M,788,{size:8});
- if(withRider)text(r.schedulePremiumDisplay==='modal'?'ตารางเบี้ยเพิ่มเติมต่องวดตามโหมดชำระ กลุ่มอาชีพ 1–2 การต่ออายุขึ้นกับเงื่อนไข ไม่มีอัตราไม่ใช่เบี้ยฟรี':'ตารางเบี้ยเพิ่มเติม รวมทุกงวดต่อปีตามอายุ กลุ่มอาชีพ 1–2 การต่ออายุขึ้นกับเงื่อนไข ไม่มีอัตราไม่ใช่เบี้ยฟรี',M,800,{size:7.5,maxWidth:W-2*M});
- text(LINE_CONTACT_TEXT,M,withRider?819:809,{size:8,color:'#338169'});
- text(`หน้า ${index+1} / ${total}`,W-M,withRider?819:809,{size:8,color:'#877b87',align:'right'});
- drawPDFDisclaimer(canvas.getContext('2d'));return canvas;
+ text(r.plan.family==='mt8560'?'* ก่อนบำนาญ: 100% ของทุนถึงอายุ 44 ปี อายุ 45–59 ปีเพิ่มเป็น 110–250%':legacy?(r.plan.family==='wholelife50000'?'* ประกันชีวิต 100% ของทุน = 50,000 บาท ตามภาพผลประโยชน์ที่แนบ':r.plan.family==='smart9999'?'* ประกันชีวิต = ค่าสูงกว่าระหว่างทุนกับ 101% ของเบี้ยสะสม ยังไม่รวมมูลค่าเวนคืน':'* ความคุ้มครองขั้นต่ำ = ค่าสูงกว่าระหว่างทุนและเบี้ยสะสม ยังไม่รวมมูลค่าเวนคืน'):'* ก่อนรับบำนาญ: ความคุ้มครองขั้นต่ำ 105% ของเบี้ยประกันที่ชำระสะสม',M,772,{size:8});
+ text(r.plan.family==='mt8560'?'อายุ 60–73 ปี: มูลค่าปัจจุบันตามตาราง × ทุน ÷ 1,000 · อายุ 74–85 ปี: -':legacy?(r.plan.family==='wholelife50000'?'ครบสัญญาอายุ 99 ปี 100% ของทุน = 50,000 บาท · เบี้ยรวมเฉพาะปีนั้น':r.plan.family==='smart9999'?'ครบสัญญา: ค่าสูงกว่าระหว่างทุนกับ 101% ของเบี้ยที่ชำระทั้งหมด · เบี้ยรวมเฉพาะปีนั้น':'เบี้ยประกันรวม: เบี้ยหลักและสัญญาเพิ่มเติมเฉพาะปีนั้น ไม่สะสมข้ามปี'):'หลังเริ่มรับบำนาญ: เบี้ยสะสมหักเงินบำนาญสะสมที่ได้รับแล้ว (ไม่ต่ำกว่า 0 บาท)',M,784,{size:8});
+ if(withRider)text(r.schedulePremiumDisplay==='modal'?'ตารางเบี้ยเพิ่มเติมต่องวดตามโหมดชำระ กลุ่มอาชีพ 1–2 การต่ออายุขึ้นกับเงื่อนไข ไม่มีอัตราไม่ใช่เบี้ยฟรี':'ตารางเบี้ยเพิ่มเติม รวมทุกงวดต่อปีตามอายุ กลุ่มอาชีพ 1–2 การต่ออายุขึ้นกับเงื่อนไข ไม่มีอัตราไม่ใช่เบี้ยฟรี',M,796,{size:7.5,maxWidth:W-2*M});
+
+
+ drawPDFFooter(canvas.getContext('2d'),index,total);return canvas;
 }
 export async function createPDFReport(r,mode,{createCanvas=()=>document.createElement('canvas'),loadFont=()=>document.fonts.load('11px Sarabun','สรุปแผนบำนาญ')}={}){
  const [{PDFDocument,PDFString}]=await Promise.all([import('./assets/pdf-lib.min.mjs'),loadFont()]);

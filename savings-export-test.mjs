@@ -13,7 +13,7 @@ for(const plan of ['standard','pro'])for(const age of [0,35,71,80])for(const mod
  assert.equal(data.headers.length,6);assert.ok(data.headers.includes('เงินคืนตามสัญญา\n(บาท)'));assert.ok(!data.headers.includes('ปีที่'));
  assert.ok(data.subtitle.includes(mode==='premium'?'คำนวณจากเบี้ยประกัน':'คำนวณจากทุนประกัน'));
  assert.ok(data.notes.includes(SAVINGS_DISCLAIMER));assert.ok(sheet.includes('orientation="portrait"'));assert.ok(sheet.includes('r:id="line"'));
- const texts=[],context={scale(){},fillRect(){},strokeRect(){},measureText(value){return {width:[...String(value)].length*4}},fillText(value,x,y){assert.ok(y<795||y===805);texts.push(String(value));}};
+ const texts=[],context={scale(){},fillRect(){},strokeRect(){},measureText(value){return {width:[...String(value)].length*4}},fillText(value,x,y){assert.ok(y<795||y===803||y===815);texts.push(String(value));}};
  drawSavingsPDF({getContext(){return context;}},r,options,1);
  assert.ok(texts.includes(String(age+15)));assert.ok(texts.some(t=>t.includes('เงินคืนตามสัญญา')));
  assert.ok(texts.some(t=>t.includes('ไม่ใช่ใบเสนอขาย')));if(simulate)assert.ok(texts.includes(r.indexBenefit.toLocaleString('th-TH',{minimumFractionDigits:2,maximumFractionDigits:2})));

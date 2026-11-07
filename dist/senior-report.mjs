@@ -1,4 +1,4 @@
-import {drawPDFDisclaimer} from './pdf-contact-link.mjs';
+import {drawPDFFooter} from './pdf-contact-link.mjs';
 import {elapsedYear} from './elapsed-year.mjs';
 import {scheduleUnit,scheduleViewRow} from './schedule-premium-view.mjs';
 import {seniorMoney as money,seniorNotes,SENIOR_HEALTH_NOTE} from './senior-calculator.mjs';
@@ -46,7 +46,7 @@ export function seniorPDFLayouts(r,measure){
   if(line||!lines.length)lines.push(line);return lines;
  };
  const unit=scheduleUnit(r,r.schedulePremiumDisplay);
- const headers=['อายุ/ปีที่\nเริ่ม 0',`เบี้ยหลัก\n(บาท/${unit})`,`เบี้ยสัญญา\nเพิ่มเติม\n(บาท/${unit})`,r.legacyCumulativeMain?'เบี้ยประกัน\nหลักสะสม\n(บาท)':`เบี้ยรวม\n(บาท/${unit})`,'กรณีเสียชีวิต\n(บาท)','กรณีเสียชีวิต\nจากอุบัติเหตุ\n(บาท)','เงินครบสัญญา\n(บาท)'];
+ const headers=['อายุ',`เบี้ยหลัก\n(บาท/${unit})`,`เบี้ยสัญญา\nเพิ่มเติม\n(บาท/${unit})`,r.legacyCumulativeMain?'เบี้ยประกัน\nหลักสะสม\n(บาท)':`เบี้ยรวม\n(บาท/${unit})`,'กรณีเสียชีวิต\n(บาท)','กรณีเสียชีวิต\nจากอุบัติเหตุ\n(บาท)','เงินครบสัญญา\n(บาท)'];
  const header=headers.map((text,i)=>wrap(text,widths[i]-8)),headerHeight=Math.max(...header.map(x=>x.length))*lineHeight+8;
  const noteLines=r.health?SENIOR_HEALTH_NOTE.split('\n').flatMap(line=>wrap(line,539.28)):[],noteHeight=noteLines.length?28+noteLines.length*13:0;
  const available=744-105-headerHeight-noteHeight,rowHeight=Math.floor(Math.min(18,available/r.schedule.length)*100)/100;
@@ -72,8 +72,8 @@ export function drawSeniorPDFPage(canvas,r,page,index,total,scale=3){
  page.noteLines.forEach((s,i)=>text(s,28,y+28+i*13,9));
  text(r.product==='senior90'?'ผลประโยชน์ตามสัญญาหลักและสัญญาเพิ่มเติมที่เลือก · รายละเอียดตามกรมธรรม์':'* แสดงขั้นต่ำที่คำนวณได้ ยังไม่รวมมูลค่าเวนคืน · รายละเอียดตามหมายเหตุและกรมธรรม์',28,767,8);
  if(r.legacyCumulativeMain)text('เบี้ยประกันหลักสะสมรวมทุกงวดตั้งแต่ปีแรกถึงปีนั้น เฉพาะสัญญาหลัก ไม่รวมสัญญาเพิ่มเติม (บาท)',28,783,8);
- text(LINE_CONTACT_TEXT,28,809,8,'#338169');text(`หน้า ${index+1} / ${total}`,510,809,8);
- drawPDFDisclaimer(canvas.getContext('2d'));return canvas;
+
+ drawPDFFooter(canvas.getContext('2d'),index,total);return canvas;
 }
 export async function createSeniorPDF(r,{createCanvas=()=>document.createElement('canvas'),loadFont=()=>document.fonts.load('9px Sarabun','วัยเก๋าคุ้มได้ใจ')}={}){
  const [{PDFDocument,PDFString}]=await Promise.all([import('./assets/pdf-lib.min.mjs'),loadFont()]);
